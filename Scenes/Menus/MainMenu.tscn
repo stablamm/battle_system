@@ -1,0 +1,55 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjitrv0kuwesp"]
+
+[ext_resource type="Script" uid="uid://fwx7y5ttipb2" path="res://Scenes/Menus/MainMenu.cs" id="1_v3fht"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_v3fht")
+
+[node name="BackgroundPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="BackgroundPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="CenterVBoxContainer" type="VBoxContainer" parent="BackgroundPanel/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="GameLabel" type="Label" parent="BackgroundPanel/MarginContainer/CenterVBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Battle System Tech Demo"
+
+[node name="ConnectButton" type="Button" parent="BackgroundPanel/MarginContainer/CenterVBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Connect"
+
+[node name="ExitButton" type="Button" parent="BackgroundPanel/MarginContainer/CenterVBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Quit"
+
+[connection signal="pressed" from="BackgroundPanel/MarginContainer/CenterVBoxContainer/ConnectButton" to="." method="OnConnectButtonPressed"]
+[connection signal="pressed" from="BackgroundPanel/MarginContainer/CenterVBoxContainer/ExitButton" to="." method="OnExitButtonPressed"]

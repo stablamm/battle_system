@@ -1,0 +1,164 @@
+[gd_scene load_steps=2 format=3 uid="uid://cx4k10l1cqgdj"]
+
+[ext_resource type="Script" uid="uid://b0wi5ar6plkdt" path="res://Scenes/Menus/ServerClientMenu.cs" id="1_tnii0"]
+
+[node name="ServerClientMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_tnii0")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MainContainer" type="VBoxContainer" parent="Panel"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ServerButton" type="Button" parent="Panel/MainContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Host Game"
+
+[node name="ClientButton" type="Button" parent="Panel/MainContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Join Game"
+
+[node name="BackButton" type="Button" parent="Panel/MainContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Back"
+
+[node name="ServerContainer" type="VBoxContainer" parent="Panel"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(550, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -78.5
+offset_top = -15.5
+offset_right = 78.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ServerIDRow" type="HBoxContainer" parent="Panel/ServerContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/ServerContainer/ServerIDRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Username:"
+horizontal_alignment = 2
+
+[node name="Input_Server_ID" type="LineEdit" parent="Panel/ServerContainer/ServerIDRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "What are you called?"
+
+[node name="ServerIPRow" type="HBoxContainer" parent="Panel/ServerContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/ServerContainer/ServerIPRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Server IP:"
+horizontal_alignment = 2
+
+[node name="Input_Server_IP" type="LineEdit" parent="Panel/ServerContainer/ServerIPRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Hidden by default"
+
+[node name="GetIPButton" type="Button" parent="Panel/ServerContainer/ServerIPRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Get IP"
+
+[node name="ServerPortRow" type="HBoxContainer" parent="Panel/ServerContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/ServerContainer/ServerPortRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Port:"
+horizontal_alignment = 2
+
+[node name="Input_Server_Port" type="LineEdit" parent="Panel/ServerContainer/ServerPortRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "7589"
+editable = false
+
+[node name="OverrideDefaultPortButton" type="Button" parent="Panel/ServerContainer/ServerPortRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Override Default Port"
+
+[node name="ServerPassRow" type="HBoxContainer" parent="Panel/ServerContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/ServerContainer/ServerPassRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+text = "Password:"
+horizontal_alignment = 2
+
+[node name="Input_Server_Pass" type="LineEdit" parent="Panel/ServerContainer/ServerPassRow"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Must be 8 characters or longer"
+
+[node name="ServerButtonsRow" type="HBoxContainer" parent="Panel/ServerContainer"]
+layout_direction = 3
+layout_mode = 2
+
+[node name="ServerBackButton" type="Button" parent="Panel/ServerContainer/ServerButtonsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Back"
+
+[node name="StartServerButton" type="Button" parent="Panel/ServerContainer/ServerButtonsRow"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Start Server"
+
+[connection signal="pressed" from="Panel/MainContainer/ServerButton" to="." method="OnServerButtonPressed"]
+[connection signal="pressed" from="Panel/MainContainer/ClientButton" to="." method="OnClientButtonPressed"]
+[connection signal="pressed" from="Panel/MainContainer/BackButton" to="." method="OnBackButtonPressed"]
+[connection signal="pressed" from="Panel/ServerContainer/ServerIPRow/GetIPButton" to="." method="OnGetIPButtonPressed"]
+[connection signal="pressed" from="Panel/ServerContainer/ServerPortRow/OverrideDefaultPortButton" to="." method="OnOverrideDefaultPortButtonPressed"]
+[connection signal="pressed" from="Panel/ServerContainer/ServerButtonsRow/ServerBackButton" to="." method="OnServerBackButtonPressed"]
+[connection signal="pressed" from="Panel/ServerContainer/ServerButtonsRow/StartServerButton" to="." method="OnServerStartButtonPressed"]

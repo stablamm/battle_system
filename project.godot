@@ -11,8 +11,17 @@ config_version=5
 [application]
 
 config/name="BattleSystem"
-config/features=PackedStringArray("4.4", "Forward Plus")
+run/main_scene="uid://bjitrv0kuwesp"
+config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+SignalManager="*res://Autoloads/SignalManager.cs"
+SceneManager="*res://Autoloads/SceneManager.cs"
+NetworkManager="*res://Autoloads/NetworkManager.cs"
+BattleManager="*res://Autoloads/BattleManager.cs"
+AutoloadManager="*res://Autoloads/AutoloadManager.cs"
 
 [dotnet]
 
