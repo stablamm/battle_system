@@ -1,0 +1,45 @@
+[gd_scene load_steps=2 format=3 uid="uid://calxycig3y0oc"]
+
+[ext_resource type="Script" uid="uid://dyqfxm2evwgu3" path="res://Scenes/MultiplayerObjects/MultiplayerChat.cs" id="1_q5fna"]
+
+[node name="MultiplayerChat" type="Node2D"]
+script = ExtResource("1_q5fna")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="Panel" parent="UI"]
+offset_left = 821.0
+offset_top = 1.0
+offset_right = 1151.0
+offset_bottom = 647.0
+
+[node name="MainContainer" type="VBoxContainer" parent="UI/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Chatbox" type="RichTextLabel" parent="UI/Panel/MainContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+
+[node name="ChatInputContainer" type="HBoxContainer" parent="UI/Panel/MainContainer"]
+layout_mode = 2
+
+[node name="ChatMessage" type="LineEdit" parent="UI/Panel/MainContainer/ChatInputContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+keep_editing_on_text_submit = true
+clear_button_enabled = true
+
+[node name="SendButton" type="Button" parent="UI/Panel/MainContainer/ChatInputContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "SEND"
+
+[connection signal="text_submitted" from="UI/Panel/MainContainer/ChatInputContainer/ChatMessage" to="." method="RequestSendMessage"]

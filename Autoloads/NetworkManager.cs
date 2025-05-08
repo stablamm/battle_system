@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -10,11 +11,15 @@ namespace BattleSystem.Autoloads
     {
         public const string NODE_PATH = "/root/NetworkManager";
 
+        private readonly byte[] Key = Encoding.UTF8.GetBytes("My32ByteSecretKey1234567890abcde");
+        private readonly byte[] IV = Encoding.UTF8.GetBytes("1234567890abcdef");
+
         private ENetMultiplayerPeer _peer;
         private Dictionary<long, string> _connectedPeers = new();
         private string _serverPasswordHash;
         private string _clientPasswordHash;
         private const int PASSWORD_MIN_LENGTH = 8;
+        private string _encryptedServerConnectionString;
 
         public override void _Ready()
         {
@@ -50,6 +55,7 @@ namespace BattleSystem.Autoloads
             Multiplayer.PeerDisconnected += OnPeerDisconnected;
 
             _connectedPeers[1] = username;
+            _encryptedServerConnectionString = EncryptConnectionData(ip, port, password);
             GD.Print($"Server started on port: {port}");
             UpdatePlayerList(ConvertToGodotDictionary(_connectedPeers)); // Initial update for server
             return true;
@@ -79,50 +85,71 @@ namespace BattleSystem.Autoloads
             return true;
         }
 
-        [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-        private void RequestConnection(string username, string passwordHash)
+        public bool ConnectToServer(string username, string connectionString)
         {
-            if (!Multiplayer.IsServer()) return;
+            if (string.IsNullOrEmpty(connectionString)) return false;
 
-            long peerId = GetTree().GetMultiplayer().GetRemoteSenderId();
-            if (passwordHash != _serverPasswordHash)
+            (string ip, int port, string password) = DecryptConnectionData(connectionString);
+
+            return ConnectToServer(ip, password, username, port);
+        }
+
+        public Dictionary<long, string> GetConnectedPeers()
+        {
+            var copy = new Dictionary<long, string>();
+            foreach (var kvp in _connectedPeers)
             {
-                RpcId(peerId, nameof(ConnectionRejected), "Invalid password");
-                _peer.DisconnectPeer((int)peerId);
-                return;
+                copy[kvp.Key] = kvp.Value;
             }
-
-            _connectedPeers[peerId] = username;
-            var playerList = ConvertToGodotDictionary(_connectedPeers);
-            Rpc(nameof(UpdatePlayerList), playerList); // Broadcast to all peers
-            UpdatePlayerList(playerList); // Explicitly update server locally
-            RpcId(peerId, nameof(ConnectionAccepted));
+            return copy;
         }
 
-        [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-        private void UpdatePlayerList(Godot.Collections.Dictionary players)
+        public string GetServerConnectionString() => _encryptedServerConnectionString;
+
+        public string EncryptConnectionData(string ip, int port, string password)
         {
-            _connectedPeers.Clear();
-            foreach (var key in players.Keys)
+            string combined = $"{ip}|{port}|{password}";
+
+            using (Aes aes = Aes.Create())
             {
-                _connectedPeers[(long)(Variant)key] = (string)players[key];
+                aes.Key = Key;
+                aes.IV = IV;
+
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        byte[] inputBytes = Encoding.UTF8.GetBytes(combined);
+                        cs.Write(inputBytes, 0, inputBytes.Length);
+                    }
+                    return Convert.ToBase64String(ms.ToArray());
+                }
             }
-
-            GD.Print($"Updating player list locally: {_connectedPeers.Count} players connected");
-            AutoloadManager.Instance.SignalM.EmitPlayerListUpdated();
         }
 
-        [Rpc(MultiplayerApi.RpcMode.Authority)]
-        private void ConnectionAccepted()
+        public (string ip, int port, string password) DecryptConnectionData(string encrypted)
         {
-            GD.Print("Connected to server successfully!");
-        }
+            byte[] encryptedBytes = Convert.FromBase64String(encrypted);
 
-        [Rpc(MultiplayerApi.RpcMode.Authority)]
-        private void ConnectionRejected(string reason)
-        {
-            GD.PrintErr($"Connection rejected: {reason}");
-            DisconnectFromServer();
+            using (Aes aes = Aes.Create())
+            {
+                aes.Key = Key;
+                aes.IV = IV;
+
+                using (MemoryStream ms = new MemoryStream(encryptedBytes))
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Read))
+                    {
+                        using (MemoryStream output = new MemoryStream())
+                        {
+                            cs.CopyTo(output);
+                            string combined = Encoding.UTF8.GetString(output.ToArray());
+                            string[] parts = combined.Split('|');
+                            return (parts[0], int.Parse(parts[1]), parts[2]);
+                        }
+                    }
+                }
+            }
         }
 
         private void OnPeerConnected(long id)
@@ -200,16 +227,6 @@ namespace BattleSystem.Autoloads
             Multiplayer.MultiplayerPeer = null;
         }
 
-        public Dictionary<long, string> GetConnectedPeers()
-        {
-            var copy = new Dictionary<long, string>();
-            foreach (var kvp in _connectedPeers)
-            {
-                copy[kvp.Key] = kvp.Value;
-            }
-            return copy;
-        }
-
         private Godot.Collections.Dictionary ConvertToGodotDictionary(Dictionary<long, string> dict)
         {
             var godotDict = new Godot.Collections.Dictionary();
@@ -218,6 +235,52 @@ namespace BattleSystem.Autoloads
                 godotDict[kvp.Key] = kvp.Value;
             }
             return godotDict;
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+        private void RequestConnection(string username, string passwordHash)
+        {
+            if (!Multiplayer.IsServer()) return;
+
+            long peerId = GetTree().GetMultiplayer().GetRemoteSenderId();
+            if (passwordHash != _serverPasswordHash)
+            {
+                RpcId(peerId, nameof(ConnectionRejected), "Invalid password");
+                _peer.DisconnectPeer((int)peerId);
+                return;
+            }
+
+            _connectedPeers[peerId] = username;
+            var playerList = ConvertToGodotDictionary(_connectedPeers);
+            Rpc(nameof(UpdatePlayerList), playerList); // Broadcast to all peers
+            UpdatePlayerList(playerList); // Explicitly update server locally
+            RpcId(peerId, nameof(ConnectionAccepted));
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+        private void UpdatePlayerList(Godot.Collections.Dictionary players)
+        {
+            _connectedPeers.Clear();
+            foreach (var key in players.Keys)
+            {
+                _connectedPeers[(long)(Variant)key] = (string)players[key];
+            }
+
+            GD.Print($"Updating player list locally: {_connectedPeers.Count} players connected");
+            AutoloadManager.Instance.SignalM.EmitPlayerListUpdated();
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.Authority)]
+        private void ConnectionAccepted()
+        {
+            GD.Print("Connected to server successfully!");
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.Authority)]
+        private void ConnectionRejected(string reason)
+        {
+            GD.PrintErr($"Connection rejected: {reason}");
+            DisconnectFromServer();
         }
     }
 }

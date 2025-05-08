@@ -11,43 +11,45 @@ namespace BattleSystem.Scenes.Menus
 
         // Main Container
         private VBoxContainer MainContainer;
-        private Button ServerButton;
-        private Button ClientButton;
-        private Button BackButton;
 
         // Server Container
         private VBoxContainer ServerContainer;
         private LineEdit Input_Server_ID;
         private LineEdit Input_Server_IP;
         private LineEdit Input_Server_Port;
-        private Button OverrideDefaultPortButton;
         private LineEdit Input_Server_Pass;
-        private Button StartServerButton;
 
         // Client Container
+        private VBoxContainer ClientContainer;
+        private LineEdit Input_Client_ID;
+        private LineEdit Input_Client_IP;
+        private LineEdit Input_Client_Port;
+        private LineEdit Input_Client_Pass;
+        private LineEdit Input_ConnectionString;
 
         public override void _Ready()
         {
             // Main Container
             MainContainer = GetNode<VBoxContainer>("%MainContainer");
-            ServerButton = GetNode<Button>("%ServerButton");
-            ClientButton = GetNode<Button>("%ClientButton");
-            BackButton = GetNode<Button>("%BackButton");
 
             // Server Container
             ServerContainer = GetNode<VBoxContainer>("%ServerContainer");
             Input_Server_ID = GetNode<LineEdit>("%Input_Server_ID");
             Input_Server_IP = GetNode<LineEdit>("%Input_Server_IP");
             Input_Server_Port = GetNode<LineEdit>("%Input_Server_Port");
-            OverrideDefaultPortButton = GetNode<Button>("%OverrideDefaultPortButton");
             Input_Server_Pass = GetNode<LineEdit>("%Input_Server_Pass");
-            StartServerButton = GetNode<Button>("%StartServerButton");
 
             // Client Container
+            ClientContainer = GetNode<VBoxContainer>("%ClientContainer");
+            Input_Client_ID = GetNode<LineEdit>("%Input_Client_ID");
+            Input_Client_IP = GetNode<LineEdit>("%Input_Client_IP");
+            Input_Client_Port = GetNode<LineEdit>("%Input_Client_Port");
+            Input_Client_Pass = GetNode<LineEdit>("%Input_Client_Pass");
+            Input_ConnectionString = GetNode<LineEdit>("%Input_ConnectionString");
 
             MainContainer.Show();
             ServerContainer.Hide();
-            //ClientContainer.Hide();
+            ClientContainer.Hide();
         }
 
         #region Main Container
@@ -55,14 +57,14 @@ namespace BattleSystem.Scenes.Menus
         {
             MainContainer.Hide();
             ServerContainer.Show();
-            //ClientContainer.Hide();
+            ClientContainer.Hide();
         }
 
         private void OnClientButtonPressed()
         {
             MainContainer.Hide();
             ServerContainer.Hide();
-            //ClientContainer.Show();
+            ClientContainer.Show();
         }
 
         private void OnBackButtonPressed()
@@ -114,7 +116,7 @@ namespace BattleSystem.Scenes.Menus
                 if (res)
                 {
                     GD.Print("Server started successfully.");
-                    //AutoloadManager.Instance.SceneM.RequestSceneChange(SceneManager.SceneType.MultiplayerLobby); //TODO: Create the lobby scene.
+                    AutoloadManager.Instance.SceneM.RequestSceneChange(SceneManager.SceneType.MultiplayerLobby);
                 }
                 else
                 {
@@ -131,6 +133,54 @@ namespace BattleSystem.Scenes.Menus
         #endregion
 
         #region Client Container
+        private void OnJoinServerButtonPressed()
+        {
+            bool hasUsername = !string.IsNullOrEmpty(Input_Client_ID.Text);
+            bool hasIp = !string.IsNullOrEmpty(Input_Client_IP.Text);
+            bool hasPort = !string.IsNullOrEmpty(Input_Client_Port.Text);
+            bool hasPassword = !string.IsNullOrEmpty(Input_Client_Pass.Text);
+            bool hasConnStr = !string.IsNullOrEmpty(Input_ConnectionString.Text);
+            bool connectedToServer = false;
+
+            if (hasConnStr)
+            {
+                connectedToServer = AutoloadManager.Instance.NetworkM.ConnectToServer(Input_Client_ID.Text, Input_ConnectionString.Text);
+            }
+            else if (hasUsername
+                && hasIp
+                && hasPort
+                && hasPassword)
+            {
+                if (Input_Client_Pass.Text.Length < MINIMUM_PASSWORD_LENGTH)
+                {
+                    GD.PrintErr($"Password must be at least {MINIMUM_PASSWORD_LENGTH} characters long.");
+                    return;
+                }
+
+                connectedToServer = AutoloadManager.Instance.NetworkM.ConnectToServer(
+                    Input_Client_ID.Text,
+                    Input_Client_IP.Text,
+                    Input_Client_Pass.Text,
+                    Convert.ToInt32(Input_Client_Port.Text)
+                );
+            }
+
+            if (connectedToServer)
+            {
+                GD.Print("Connected to server successfully.");
+                AutoloadManager.Instance.SceneM.RequestSceneChange(SceneManager.SceneType.MultiplayerLobby);
+            }
+            else
+            {
+                GD.PrintErr("Failed to connect to server.");
+            }
+        }
+
+        private void OnClientBackButtonPressed()
+        {
+            MainContainer.Show();
+            ClientContainer.Hide();
+        }
         #endregion
     }
 }

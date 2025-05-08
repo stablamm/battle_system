@@ -23,6 +23,14 @@ NetworkManager="*res://Autoloads/NetworkManager.cs"
 BattleManager="*res://Autoloads/BattleManager.cs"
 AutoloadManager="*res://Autoloads/AutoloadManager.cs"
 
+[display]
+
+window/stretch/mode="viewport"
+
 [dotnet]
 
 project/assembly_name="BattleSystem"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=3

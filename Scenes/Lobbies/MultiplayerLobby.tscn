@@ -1,0 +1,41 @@
+[gd_scene load_steps=3 format=3 uid="uid://cplo0mmo62rl2"]
+
+[ext_resource type="Script" uid="uid://vgy7kn5y1dxi" path="res://Scenes/Lobbies/MultiplayerLobby.cs" id="1_usyum"]
+[ext_resource type="PackedScene" uid="uid://calxycig3y0oc" path="res://Scenes/MultiplayerObjects/multiplayer_chat.tscn" id="2_n0f7s"]
+
+[node name="MultiplayerLobby" type="Node2D"]
+script = ExtResource("1_usyum")
+
+[node name="MultiplayerChat" parent="." instance=ExtResource("2_n0f7s")]
+position = Vector2(883, 278)
+
+[node name="GenerateSection" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="GenerateButton" type="Button" parent="GenerateSection"]
+unique_name_in_owner = true
+offset_left = 273.0
+offset_top = 315.0
+offset_right = 534.0
+offset_bottom = 346.0
+text = "GENERATE CONNECTION STRING"
+
+[node name="ConnectionString" type="LineEdit" parent="GenerateSection"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260.64, 0)
+offset_left = 273.0
+offset_top = 348.0
+offset_right = 533.64
+offset_bottom = 379.0
+editable = false
+
+[node name="CopyButton" type="Button" parent="GenerateSection"]
+unique_name_in_owner = true
+offset_left = 536.0
+offset_top = 348.0
+offset_right = 587.0
+offset_bottom = 379.0
+text = "COPY"
+
+[connection signal="pressed" from="GenerateSection/GenerateButton" to="." method="OnGenerateButtonPressed"]
+[connection signal="pressed" from="GenerateSection/CopyButton" to="." method="OnCopyButtonPressed"]

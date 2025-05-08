@@ -10,14 +10,16 @@ namespace BattleSystem.Autoloads
         public enum SceneType
         {
             MainMenu,
-            ServerClientMenu
+            ServerClientMenu,
+            MultiplayerLobby
         }
 
         // Dictionary to store scene paths
         private Dictionary<SceneType, string> _scenePaths = new()
         {
             { SceneType.MainMenu, "res://Scenes/Menus/MainMenu.tscn" },
-            { SceneType.ServerClientMenu, "res://Scenes/Menus/ServerClientMenu.tscn" }
+            { SceneType.ServerClientMenu, "res://Scenes/Menus/ServerClientMenu.tscn" },
+            { SceneType.MultiplayerLobby, "res://Scenes/Lobbies/MultiplayerLobby.tscn" }
         };
 
         // Current scene tracking
