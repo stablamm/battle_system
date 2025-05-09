@@ -1,0 +1,66 @@
+[gd_scene load_steps=3 format=3 uid="uid://bhd8cmfylxld5"]
+
+[ext_resource type="Script" uid="uid://0rjvxfunxouo" path="res://Scenes/MultiplayerObjects/BattlerSelector.cs" id="1_lfvep"]
+[ext_resource type="Texture2D" uid="uid://dlg4kagmv1yyn" path="res://Assets/Kenney/FantasyBorders/divider-fade-002.png" id="2_ivbj6"]
+
+[node name="BattlerSelector" type="Node2D"]
+script = ExtResource("1_lfvep")
+
+[node name="Background" type="Panel" parent="."]
+offset_right = 191.0
+offset_bottom = 221.0
+
+[node name="BattlerNameLabel" type="Label" parent="."]
+offset_right = 191.0
+offset_bottom = 38.0
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Divider_T_L" type="Sprite2D" parent="."]
+position = Vector2(48, 44)
+rotation = 3.14159
+texture = ExtResource("2_ivbj6")
+
+[node name="Divider_T_R" type="Sprite2D" parent="."]
+position = Vector2(143, 44)
+texture = ExtResource("2_ivbj6")
+
+[node name="Marker" type="Marker2D" parent="."]
+position = Vector2(95, 94)
+
+[node name="BattlerDescription" type="RichTextLabel" parent="."]
+offset_top = 117.0
+offset_right = 191.0
+offset_bottom = 186.0
+bbcode_enabled = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BottomRow" type="Node2D" parent="."]
+
+[node name="LeftButton" type="Button" parent="BottomRow"]
+unique_name_in_owner = true
+offset_top = 190.0
+offset_right = 18.0
+offset_bottom = 221.0
+text = "<"
+
+[node name="RightButton" type="Button" parent="BottomRow"]
+unique_name_in_owner = true
+offset_left = 173.0
+offset_top = 190.0
+offset_right = 191.0
+offset_bottom = 221.0
+text = ">"
+
+[node name="SelectButton" type="Button" parent="BottomRow"]
+unique_name_in_owner = true
+offset_left = 59.0
+offset_top = 190.0
+offset_right = 135.0
+offset_bottom = 221.0
+text = "SELECT"
+
+[connection signal="pressed" from="BottomRow/LeftButton" to="." method="OnLeftButtonPressed"]
+[connection signal="pressed" from="BottomRow/RightButton" to="." method="OnRightButtonPressed"]
+[connection signal="pressed" from="BottomRow/SelectButton" to="." method="OnSelectButtonPressed"]

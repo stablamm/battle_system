@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://43w7u50o08wm"]
+
+[ext_resource type="PackedScene" uid="uid://cptk3xppq1bg3" path="res://BattleEngine/Battlers/base_battler.tscn" id="1_xnkpi"]
+[ext_resource type="Resource" uid="uid://cmdmng4ftahdm" path="res://BattleEngine/Resources/Inherited/DrexalResrc.tres" id="2_dm4ci"]
+
+[node name="DrexalBattler" instance=ExtResource("1_xnkpi")]
+Resource = ExtResource("2_dm4ci")

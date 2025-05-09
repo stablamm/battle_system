@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BattlerResource" load_steps=3 format=3 uid="uid://7eaoc6s2s2go"]
+
+[ext_resource type="Texture2D" uid="uid://1cn2ttqnnucu" path="res://Assets/Battlers/Chasmire.png" id="1_rqm4a"]
+[ext_resource type="Script" uid="uid://cyiwdmeafx1qg" path="res://BattleEngine/Resources/BattlerResource.cs" id="1_ulugf"]
+
+[resource]
+script = ExtResource("1_ulugf")
+Name = "Chasmire"
+Description = "Evokes a deep, dark void and menace with a touch of mystique."
+SpriteTexture = ExtResource("1_rqm4a")
+metadata/_custom_type_script = "uid://cyiwdmeafx1qg"

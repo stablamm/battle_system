@@ -28,5 +28,11 @@ namespace BattleSystem.Scenes.Lobbies
         {
             DisplayServer.ClipboardSet(ConnectionString.Text);
         }
+
+        private void OnBattleButtonPressed()
+        {
+            if (!Multiplayer.IsServer()) { return; }
+            AutoloadManager.Instance.SceneM.RequestSceneChange(SceneManager.SceneType.BattleMenu);
+        }
     }
 }

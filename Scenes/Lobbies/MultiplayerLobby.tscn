@@ -14,28 +14,37 @@ unique_name_in_owner = true
 
 [node name="GenerateButton" type="Button" parent="GenerateSection"]
 unique_name_in_owner = true
-offset_left = 273.0
-offset_top = 315.0
-offset_right = 534.0
-offset_bottom = 346.0
+offset_left = 501.0
+offset_top = 579.0
+offset_right = 762.0
+offset_bottom = 610.0
 text = "GENERATE CONNECTION STRING"
 
 [node name="ConnectionString" type="LineEdit" parent="GenerateSection"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(260.64, 0)
-offset_left = 273.0
-offset_top = 348.0
-offset_right = 533.64
-offset_bottom = 379.0
+offset_left = 501.0
+offset_top = 612.0
+offset_right = 761.64
+offset_bottom = 643.0
 editable = false
 
 [node name="CopyButton" type="Button" parent="GenerateSection"]
 unique_name_in_owner = true
-offset_left = 536.0
-offset_top = 348.0
-offset_right = 587.0
-offset_bottom = 379.0
+offset_left = 764.0
+offset_top = 612.0
+offset_right = 815.0
+offset_bottom = 643.0
 text = "COPY"
+
+[node name="BattleButton" type="Button" parent="."]
+unique_name_in_owner = true
+offset_left = 348.0
+offset_top = 168.0
+offset_right = 413.0
+offset_bottom = 199.0
+text = "BATTLE"
 
 [connection signal="pressed" from="GenerateSection/GenerateButton" to="." method="OnGenerateButtonPressed"]
 [connection signal="pressed" from="GenerateSection/CopyButton" to="." method="OnCopyButtonPressed"]
+[connection signal="pressed" from="BattleButton" to="." method="OnBattleButtonPressed"]

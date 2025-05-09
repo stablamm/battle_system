@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BattlerResource" load_steps=3 format=3 uid="uid://cmdmng4ftahdm"]
+
+[ext_resource type="Texture2D" uid="uid://2f56gngdol17" path="res://Assets/Battlers/Drexal.png" id="1_7g1ru"]
+[ext_resource type="Script" uid="uid://cyiwdmeafx1qg" path="res://BattleEngine/Resources/BattlerResource.cs" id="1_fnvsw"]
+
+[resource]
+script = ExtResource("1_fnvsw")
+Name = "Drexal"
+Description = "Sharp, aggressive, and alien without overcomplicating it."
+SpriteTexture = ExtResource("1_7g1ru")
+metadata/_custom_type_script = "uid://cyiwdmeafx1qg"

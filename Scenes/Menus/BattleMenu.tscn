@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://dcfou4o1s7dbl"]
+
+[ext_resource type="Script" uid="uid://dq5gw0wog322d" path="res://Scenes/Menus/BattleMenu.cs" id="1_fmjo0"]
+[ext_resource type="PackedScene" uid="uid://bhd8cmfylxld5" path="res://Scenes/MultiplayerObjects/BattlerSelector.tscn" id="2_nfm4r"]
+[ext_resource type="PackedScene" uid="uid://calxycig3y0oc" path="res://Scenes/MultiplayerObjects/multiplayer_chat.tscn" id="3_vva07"]
+
+[node name="BattleMenu" type="Node2D"]
+script = ExtResource("1_fmjo0")
+
+[node name="BattlerSelectorLeft" parent="." instance=ExtResource("2_nfm4r")]
+position = Vector2(8, 104)
+scale = Vector2(2, 2)
+
+[node name="BattlerSelectorRight" parent="." instance=ExtResource("2_nfm4r")]
+position = Vector2(417, 104)
+scale = Vector2(2, 2)
+
+[node name="MultiplayerChat" parent="." instance=ExtResource("3_vva07")]

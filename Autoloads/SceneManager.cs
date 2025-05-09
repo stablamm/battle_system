@@ -11,7 +11,8 @@ namespace BattleSystem.Autoloads
         {
             MainMenu,
             ServerClientMenu,
-            MultiplayerLobby
+            MultiplayerLobby,
+            BattleMenu
         }
 
         // Dictionary to store scene paths
@@ -19,7 +20,8 @@ namespace BattleSystem.Autoloads
         {
             { SceneType.MainMenu, "res://Scenes/Menus/MainMenu.tscn" },
             { SceneType.ServerClientMenu, "res://Scenes/Menus/ServerClientMenu.tscn" },
-            { SceneType.MultiplayerLobby, "res://Scenes/Lobbies/MultiplayerLobby.tscn" }
+            { SceneType.MultiplayerLobby, "res://Scenes/Lobbies/MultiplayerLobby.tscn" },
+            { SceneType.BattleMenu, "res://Scenes/Menus/BattleMenu.tscn" }
         };
 
         // Current scene tracking
