@@ -18,6 +18,7 @@ namespace BattleSystem.Scenes.MultiplayerObjects
         private Button LeftButton;
         private Button RightButton;
         private Button SelectButton;
+        private Label ReadyLabel;
 
         public override void _Ready()
         {
@@ -27,6 +28,7 @@ namespace BattleSystem.Scenes.MultiplayerObjects
             LeftButton = GetNode<Button>("%LeftButton");
             RightButton = GetNode<Button>("%RightButton");
             SelectButton = GetNode<Button>("%SelectButton");
+            ReadyLabel = GetNode<Label>("%ReadyLabel");
             
             RequestNewBattler(BattlerIndex);
 
@@ -40,7 +42,7 @@ namespace BattleSystem.Scenes.MultiplayerObjects
 
         private void OnLeftButtonPressed()
         {
-            if (!CanPerformAction()) return;
+            if (!CanPerformAction()) { return; }
 
             BattlerIndex--;
             if (BattlerIndex < 0)
@@ -66,7 +68,9 @@ namespace BattleSystem.Scenes.MultiplayerObjects
 
         private void OnSelectButtonPressed()
         {
+            if (!CanPerformAction()) { return; }
 
+            RequestSelectBattler(NodeOwnerId, BattlerIndex);
         }
 
         public bool CanPerformAction() => NodeOwnerId == Multiplayer.GetUniqueId(); // Check if the current node is owned by the player
@@ -81,6 +85,18 @@ namespace BattleSystem.Scenes.MultiplayerObjects
         {
             Rpc(nameof(SyncBattlerSelection), owner); // Remote update
             SyncBattlerSelection(owner); // Local update
+        }
+
+        public void RequestSelectBattler(long ownerId, int index)
+        {
+            Rpc(nameof(SelectBattler), ownerId, index); // Remote update
+
+            LeftButton.Visible = false;
+            SelectButton.Visible = false;
+            RightButton.Visible = false;
+
+            Rpc(nameof(ReadyState)); // Remote update
+            ReadyState(); // Local update
         }
 
         [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
@@ -121,6 +137,28 @@ namespace BattleSystem.Scenes.MultiplayerObjects
                 RightButton.Visible  = true;
                 SelectButton.Visible = true;
             }
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+        public void SelectBattler(long ownerId, int index)
+        {
+            if (!Multiplayer.IsServer()) { return; }
+            
+            AutoloadManager.Instance.BattleM.SelectBattler(ownerId, (BattleManager.Battlers)index);
+
+            //TODO: Find a better way to trigger this.
+            if (AutoloadManager.Instance.BattleM.SelectedBattlers.Keys.Count > 1)
+            {
+                AutoloadManager.Instance.SignalM.EmitBattleMenuDisplayStartButton();
+            }
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
+        public void ReadyState()
+        {
+            ReadyLabel.Visible = true;
+
+            if (!Multiplayer.IsServer()) { return; }
         }
     }
 }

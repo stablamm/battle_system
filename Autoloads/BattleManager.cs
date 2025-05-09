@@ -1,3 +1,4 @@
+using BattleSystem.BattleEngine.Battlers;
 using Godot;
 using Godot.Collections;
 
@@ -30,6 +31,8 @@ namespace BattleSystem.Autoloads
 
         public Dictionary<Battlers, PackedScene> PackedBattlers { get; private set; } = new();
 
+        public Dictionary<long, Battlers> SelectedBattlers { get; private set; } = new();
+
         public override void _Ready()
         {
             PreloadBattlers();
@@ -43,6 +46,11 @@ namespace BattleSystem.Autoloads
             PackedBattlers.Add(Battlers.DREXAL, GD.Load<PackedScene>("res://BattleEngine/Battlers/Inherited/drexal_battler.tscn"));
 
             GD.Print("Battlers preloaded.");
+        }
+
+        public void SelectBattler(long id, Battlers battlerType)
+        {
+            SelectedBattlers[id] = battlerType;
         }
     }
 }

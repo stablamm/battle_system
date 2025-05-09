@@ -61,6 +61,15 @@ offset_right = 135.0
 offset_bottom = 221.0
 text = "SELECT"
 
+[node name="ReadyLabel" type="Label" parent="BottomRow"]
+unique_name_in_owner = true
+visible = false
+offset_left = 71.0
+offset_top = 194.0
+offset_right = 122.0
+offset_bottom = 217.0
+text = "READY"
+
 [connection signal="pressed" from="BottomRow/LeftButton" to="." method="OnLeftButtonPressed"]
 [connection signal="pressed" from="BottomRow/RightButton" to="." method="OnRightButtonPressed"]
 [connection signal="pressed" from="BottomRow/SelectButton" to="." method="OnSelectButtonPressed"]

@@ -9,11 +9,20 @@ namespace BattleSystem.Scenes.Menus
     {
         private BattlerSelector BattlerSelectorLeft; // Server
         private BattlerSelector BattlerSelectorRight; // Client/AI
+        private Button StartBattleButton;
 
         public override void _Ready()
         {
             BattlerSelectorLeft = GetNode<BattlerSelector>("BattlerSelectorLeft");
             BattlerSelectorRight = GetNode<BattlerSelector>("BattlerSelectorRight");
+            StartBattleButton = GetNode<Button>("StartBattleButton");
+
+            InitializeBattlerSelectors();
+            StartBattleButton.Visible = false;
+
+            AutoloadManager.Instance.SignalM.Connect(
+                nameof(SignalManager.BattleMenu_DisplayStartButton_EventHandler)
+                , new Callable(this, nameof(RequestDisplayStartBattleButton)));
         }
 
         public void InitializeBattlerSelectors()
@@ -38,11 +47,24 @@ namespace BattleSystem.Scenes.Menus
             Rpc(nameof(SyncBattleSelectors), leftIndex, rightIndex);
         }
 
+        public void RequestDisplayStartBattleButton()
+        {
+            Rpc(nameof(DisplayStartBattleButton));
+        }
+
         [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
         public void SyncBattleSelectors(long leftIndex, long rightIndex)
         {
             BattlerSelectorLeft.RequestSync(leftIndex);
             BattlerSelectorRight.RequestSync(rightIndex);
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+        public void DisplayStartBattleButton()
+        {
+            if (!Multiplayer.IsServer()) { return; }
+        
+            StartBattleButton.Visible = true;
         }
     }
 }

@@ -16,3 +16,12 @@ position = Vector2(417, 104)
 scale = Vector2(2, 2)
 
 [node name="MultiplayerChat" parent="." instance=ExtResource("3_vva07")]
+
+[node name="StartBattleButton" type="Button" parent="."]
+unique_name_in_owner = true
+visible = false
+offset_left = 348.0
+offset_top = 589.0
+offset_right = 465.0
+offset_bottom = 620.0
+text = "START BATTLE"
