@@ -1,6 +1,6 @@
 using Godot;
 using System.Collections.Generic;
-using System.Linq;
+
 namespace BattleSystem.Autoloads
 {
     public partial class SceneManager : Node
@@ -12,7 +12,8 @@ namespace BattleSystem.Autoloads
             MainMenu,
             ServerClientMenu,
             MultiplayerLobby,
-            BattleMenu
+            BattleMenu,
+            DemoBattleScene
         }
 
         // Dictionary to store scene paths
@@ -21,7 +22,8 @@ namespace BattleSystem.Autoloads
             { SceneType.MainMenu, "res://Scenes/Menus/MainMenu.tscn" },
             { SceneType.ServerClientMenu, "res://Scenes/Menus/ServerClientMenu.tscn" },
             { SceneType.MultiplayerLobby, "res://Scenes/Lobbies/MultiplayerLobby.tscn" },
-            { SceneType.BattleMenu, "res://Scenes/Menus/BattleMenu.tscn" }
+            { SceneType.BattleMenu, "res://Scenes/Menus/BattleMenu.tscn" },
+            { SceneType.DemoBattleScene, "res://Scenes/BattleScenes/DemoScene.tscn" }
         };
 
         // Current scene tracking

@@ -25,6 +25,13 @@ namespace BattleSystem.Scenes.Menus
                 , new Callable(this, nameof(RequestDisplayStartBattleButton)));
         }
 
+        public void OnStartBattleButtonPressed()
+        {
+            if (!Multiplayer.IsServer()) { return; }
+
+            AutoloadManager.Instance.SceneM.RequestSceneChange(SceneManager.SceneType.DemoBattleScene);
+        }
+
         public void InitializeBattlerSelectors()
         {
             if (!Multiplayer.IsServer()) return;

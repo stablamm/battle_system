@@ -25,3 +25,5 @@ offset_top = 589.0
 offset_right = 465.0
 offset_bottom = 620.0
 text = "START BATTLE"
+
+[connection signal="pressed" from="StartBattleButton" to="." method="OnStartBattleButtonPressed"]
