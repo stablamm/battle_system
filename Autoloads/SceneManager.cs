@@ -59,7 +59,7 @@ namespace BattleSystem.Autoloads
             var packedScene = GD.Load<PackedScene>(scenePath);
             if (packedScene == null)
             {
-                GD.PrintErr($"Failed to load scene at {scenePath}");
+                AutoloadManager.Instance.LogM.WriteLog($"Failed to load scene at {scenePath}", LogManager.LOG_TYPE.ERROR);
                 return;
             }
 
@@ -68,7 +68,7 @@ namespace BattleSystem.Autoloads
             GetTree().CurrentScene = newScene;
 
             _currentSceneName = sceneName;
-            GD.Print($"Changed to scene: {sceneName}");
+            AutoloadManager.Instance.LogM.WriteLog($"Changed to scene: {sceneName}", LogManager.LOG_TYPE.INFO);
         }
 
         // Handle new peer connections
@@ -87,13 +87,13 @@ namespace BattleSystem.Autoloads
         {
             if (!Multiplayer.IsServer())
             {
-                GD.PrintErr("Only server can request scene changes");
+                AutoloadManager.Instance.LogM.WriteLog("Only server can request scene changes", LogManager.LOG_TYPE.ERROR);
                 return;
             }
 
             if (!_scenePaths.ContainsKey(sceneName))
             {
-                GD.PrintErr($"Scene {sceneName} not found in scene dictionary");
+                AutoloadManager.Instance.LogM.WriteLog($"Scene {sceneName} not found in scene dictionary", LogManager.LOG_TYPE.ERROR);
                 return;
             }
 
@@ -107,7 +107,7 @@ namespace BattleSystem.Autoloads
         {
             if (!_scenePaths.TryGetValue(sceneName, out string scenePath))
             {
-                GD.PrintErr($"Scene {sceneName} not found in scene dictionary");
+                AutoloadManager.Instance.LogM.WriteLog($"Scene {sceneName} not found in scene dictionary", LogManager.LOG_TYPE.ERROR);
                 return;
             }
 

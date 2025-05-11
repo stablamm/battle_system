@@ -9,6 +9,7 @@ namespace BattleSystem.Autoloads
         public NetworkManager NetworkM;
         public SceneManager SceneM;
         public SignalManager SignalM;
+        public LogManager LogM;
 
         public override void _Ready()
         {
@@ -18,6 +19,7 @@ namespace BattleSystem.Autoloads
             NetworkM = GetNode<NetworkManager>(NetworkManager.NODE_PATH);
             SceneM = GetNode<SceneManager>(SceneManager.NODE_PATH);
             SignalM = GetNode<SignalManager>(SignalManager.NODE_PATH);
+            LogM = GetNode<LogManager>(LogManager.NODE_PATH);
         }
     }
 }

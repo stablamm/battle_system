@@ -102,7 +102,7 @@ namespace BattleSystem.Scenes.Menus
             {
                 if (Input_Server_Pass.Text.Length < MINIMUM_PASSWORD_LENGTH)
                 {
-                    GD.PrintErr($"Password must be at least {MINIMUM_PASSWORD_LENGTH} characters long.");
+                    AutoloadManager.Instance.LogM.WriteLog($"Password must be at least {MINIMUM_PASSWORD_LENGTH} characters long.", LogManager.LOG_TYPE.ERROR);
                     return;
                 }
 
@@ -115,12 +115,12 @@ namespace BattleSystem.Scenes.Menus
 
                 if (res)
                 {
-                    GD.Print("Server started successfully.");
+                    AutoloadManager.Instance.LogM.WriteLog("Server started successfully.");
                     AutoloadManager.Instance.SceneM.RequestSceneChange(SceneManager.SceneType.MultiplayerLobby);
                 }
                 else
                 {
-                    GD.PrintErr("Failed to start server.");
+                    AutoloadManager.Instance.LogM.WriteLog("Failed to start server.", LogManager.LOG_TYPE.ERROR);
                 }
             }
         }
@@ -153,7 +153,7 @@ namespace BattleSystem.Scenes.Menus
             {
                 if (Input_Client_Pass.Text.Length < MINIMUM_PASSWORD_LENGTH)
                 {
-                    GD.PrintErr($"Password must be at least {MINIMUM_PASSWORD_LENGTH} characters long.");
+                    AutoloadManager.Instance.LogM.WriteLog($"Password must be at least {MINIMUM_PASSWORD_LENGTH} characters long.", LogManager.LOG_TYPE.ERROR);
                     return;
                 }
 
@@ -167,12 +167,12 @@ namespace BattleSystem.Scenes.Menus
 
             if (connectedToServer)
             {
-                GD.Print("Connected to server successfully.");
+                AutoloadManager.Instance.LogM.WriteLog("Connected to server successfully.");
                 AutoloadManager.Instance.SceneM.RequestSceneChange(SceneManager.SceneType.MultiplayerLobby);
             }
             else
             {
-                GD.PrintErr("Failed to connect to server.");
+                AutoloadManager.Instance.LogM.WriteLog("Failed to connect to server.", LogManager.LOG_TYPE.ERROR);
             }
         }
 

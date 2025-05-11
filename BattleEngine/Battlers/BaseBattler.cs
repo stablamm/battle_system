@@ -1,6 +1,6 @@
+using BattleSystem.Autoloads;
 using BattleSystem.BattleEngine.Resources;
 using Godot;
-using System;
 
 namespace BattleSystem.BattleEngine.Battlers
 {
@@ -17,7 +17,7 @@ namespace BattleSystem.BattleEngine.Battlers
 
             if (Resource == null)
             {
-                GD.PrintErr("Battler missing resource. Please assign a BattlerResource to the BaseBattler instance.");
+                AutoloadManager.Instance.LogM.WriteLog("Battler missing resource. Please assign a BattlerResource to the BaseBattler instance.", LogManager.LOG_TYPE.ERROR);
                 return;
             }
 

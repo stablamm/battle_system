@@ -46,7 +46,7 @@ namespace BattleSystem.Autoloads
             Error err = _peer.CreateServer(port, maxClients);
             if (err != Error.Ok)
             {
-                GD.PrintErr($"Server creation failed: {err}");
+                AutoloadManager.Instance.LogM.WriteLog($"Server creation failed: {err}", LogManager.LOG_TYPE.ERROR);
                 return false;
             }
 
@@ -56,7 +56,7 @@ namespace BattleSystem.Autoloads
 
             _connectedPeers[1] = username;
             _encryptedServerConnectionString = EncryptConnectionData(ip, port, password);
-            GD.Print($"Server started on port: {port}");
+            AutoloadManager.Instance.LogM.WriteLog($"Server started on port: {port}", LogManager.LOG_TYPE.INFO);
             UpdatePlayerList(ConvertToGodotDictionary(_connectedPeers)); // Initial update for server
             return true;
         }
@@ -69,7 +69,7 @@ namespace BattleSystem.Autoloads
             Error err = _peer.CreateClient(ip, port);
             if (err != Error.Ok)
             {
-                GD.PrintErr($"Client connection failed: {err}");
+                AutoloadManager.Instance.LogM.WriteLog($"Client connection failed: {err}");
                 return false;
             }
 
@@ -81,7 +81,7 @@ namespace BattleSystem.Autoloads
             Multiplayer.PeerDisconnected += OnPeerDisconnected;
 
             _connectedPeers[Multiplayer.GetUniqueId()] = username;
-            GD.Print($"Connecting to server at {ip}:{port}");
+            AutoloadManager.Instance.LogM.WriteLog($"Connecting to server at {ip}:{port}", LogManager.LOG_TYPE.INFO);
             return true;
         }
 
@@ -154,7 +154,7 @@ namespace BattleSystem.Autoloads
 
         private void OnPeerConnected(long id)
         {
-            GD.Print($"Peer connected with ID: {id}");
+            AutoloadManager.Instance.LogM.WriteLog($"Peer connected with ID: {id}", LogManager.LOG_TYPE.INFO);
             if (Multiplayer.IsServer())
             {
                 Rpc(nameof(UpdatePlayerList), ConvertToGodotDictionary(_connectedPeers));
@@ -164,7 +164,7 @@ namespace BattleSystem.Autoloads
 
         private void OnPeerDisconnected(long id)
         {
-            GD.Print($"Peer disconnected with ID: {id}");
+            AutoloadManager.Instance.LogM.WriteLog($"Peer disconnected with ID: {id}", LogManager.LOG_TYPE.INFO);
             if (Multiplayer.IsServer())
             {
                 _connectedPeers.Remove(id);
@@ -176,21 +176,21 @@ namespace BattleSystem.Autoloads
 
         private void OnConnectedToServer()
         {
-            GD.Print("Successfully connected to server, sending connection request...");
+            AutoloadManager.Instance.LogM.WriteLog("Successfully connected to server, sending connection request...");
             RpcId(1, nameof(RequestConnection), _connectedPeers[Multiplayer.GetUniqueId()], _clientPasswordHash);
             _clientPasswordHash = null;
         }
 
         private void OnConnectionFailed()
         {
-            GD.PrintErr("Failed to connect to server.");
+            AutoloadManager.Instance.LogM.WriteLog("Failed to connect to server.");
             _clientPasswordHash = null;
             CleanupConnection();
         }
 
         private void OnServerDisconnected()
         {
-            GD.Print("Disconnected from server.");
+            AutoloadManager.Instance.LogM.WriteLog("Disconnected from server.");
             CleanupConnection();
         }
 
@@ -198,7 +198,7 @@ namespace BattleSystem.Autoloads
         {
             if (string.IsNullOrEmpty(password) || password.Length < PASSWORD_MIN_LENGTH)
             {
-                GD.PrintErr($"Password must be at least {PASSWORD_MIN_LENGTH} characters long");
+                AutoloadManager.Instance.LogM.WriteLog($"Password must be at least {PASSWORD_MIN_LENGTH} characters long", LogManager.LOG_TYPE.ERROR);
                 return false;
             }
             return true;
@@ -266,20 +266,20 @@ namespace BattleSystem.Autoloads
                 _connectedPeers[(long)(Variant)key] = (string)players[key];
             }
 
-            GD.Print($"Updating player list locally: {_connectedPeers.Count} players connected");
+            AutoloadManager.Instance.LogM.WriteLog($"Updating player list locally: {_connectedPeers.Count} players connected");
             AutoloadManager.Instance.SignalM.EmitPlayerListUpdated();
         }
 
         [Rpc(MultiplayerApi.RpcMode.Authority)]
         private void ConnectionAccepted()
         {
-            GD.Print("Connected to server successfully!");
+            AutoloadManager.Instance.LogM.WriteLog("Connected to server successfully!");
         }
 
         [Rpc(MultiplayerApi.RpcMode.Authority)]
         private void ConnectionRejected(string reason)
         {
-            GD.PrintErr($"Connection rejected: {reason}");
+            AutoloadManager.Instance.LogM.WriteLog($"Connection rejected: {reason}");
             DisconnectFromServer();
         }
     }

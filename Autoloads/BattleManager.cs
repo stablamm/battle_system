@@ -40,12 +40,8 @@ namespace BattleSystem.Autoloads
 
         public void PreloadBattlers()
         {
-            GD.Print("Preloading battlers...");
-
             PackedBattlers.Add(Battlers.CHASMIRE, GD.Load<PackedScene>("res://BattleEngine/Battlers/Inherited/chasmire_battler.tscn"));
             PackedBattlers.Add(Battlers.DREXAL, GD.Load<PackedScene>("res://BattleEngine/Battlers/Inherited/drexal_battler.tscn"));
-
-            GD.Print("Battlers preloaded.");
         }
 
         public void SelectBattler(long id, Battlers battlerType)
@@ -57,7 +53,7 @@ namespace BattleSystem.Autoloads
         {
             if (!Multiplayer.IsServer()) { return; }
 
-            GD.Print("Starting game...");
+            AutoloadManager.Instance.LogM.WriteLog("Starting game...", LogManager.LOG_TYPE.INFO);
 
             Rpc(nameof(SyncState), (int)BattleState.PLAYER_ONE_ATTACK); // Start with player one attack state.
         }
@@ -66,7 +62,7 @@ namespace BattleSystem.Autoloads
         {
             if (!Multiplayer.IsServer()) { return; }
 
-            GD.Print("Updating state...");
+            AutoloadManager.Instance.LogM.WriteLog("Updating state...", LogManager.LOG_TYPE.INFO);
             Rpc(nameof(SyncState), (int)state);
         }
 
@@ -74,8 +70,8 @@ namespace BattleSystem.Autoloads
         private void SyncState(BattleState newState)
         {
             CurrentState = newState;
+            AutoloadManager.Instance.LogM.WriteLog($"Turn changed to: {newState.ToString()}.", LogManager.LOG_TYPE.INFO);
             AutoloadManager.Instance.SignalM.EmitBattleStateChanged((int)newState);
-            GD.Print($"Turn changed to: { newState.ToString() }.");
         }
     }
 }
