@@ -1,6 +1,7 @@
 using BattleSystem.BattleEngine.Battlers;
 using Godot;
-using Godot.Collections;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace BattleSystem.Autoloads
 {
@@ -30,6 +31,7 @@ namespace BattleSystem.Autoloads
 
         public Dictionary<Battlers, PackedScene> PackedBattlers { get; private set; } = new(); // Resources for spawning battlers.
         public Dictionary<long, Battlers> SelectedBattlers { get; private set; } = new(); // Battlers selected for battle.
+        public Dictionary<long, BattlerStats> PlayerStats { get; private set; } = new();
         public BattleState CurrentState { get; private set; } = BattleState.IDLE; // Current state of the battle.
         public BattleType TypeOfBattle { get; private set; } = BattleType.ATTACK;
 
@@ -53,7 +55,7 @@ namespace BattleSystem.Autoloads
         {
             if (!Multiplayer.IsServer()) { return; }
 
-            AutoloadManager.Instance.LogM.WriteLog("Starting game...", LogManager.LOG_TYPE.INFO);
+            AutoloadManager.Instance.LogM.WriteLog("Starting game...");
 
             Rpc(nameof(SyncState), (int)BattleState.PLAYER_ONE_ATTACK); // Start with player one attack state.
         }
@@ -62,15 +64,42 @@ namespace BattleSystem.Autoloads
         {
             if (!Multiplayer.IsServer()) { return; }
 
-            AutoloadManager.Instance.LogM.WriteLog("Updating state...", LogManager.LOG_TYPE.INFO);
+            AutoloadManager.Instance.LogM.WriteLog("Updating state...");
             Rpc(nameof(SyncState), (int)state);
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+        public void SyncStats(long id, string statsJson)
+        {
+            if (!Multiplayer.IsServer()) { return; }
+
+            var stats = JsonConvert.DeserializeObject<BattlerStats>(statsJson);
+            PlayerStats[id] = stats;
+
+            AutoloadManager.Instance.LogM.WriteLog($"Player {id} stats synced: {statsJson}");
+
+            Rpc(nameof(RemoteSyncStats), id, statsJson);
+        }
+
+        /// <summary>
+        /// Syncs the stats of the player with the given ID to the client.
+        /// </summary>
+        /// <param name="id">Player ID</param>
+        /// <param name="statsJson">Jsonified Stats</param>
+        [Rpc(MultiplayerApi.RpcMode.Authority, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
+        public void RemoteSyncStats(long id, string statsJson)
+        {
+            var stats = JsonConvert.DeserializeObject<BattlerStats>(statsJson);
+            PlayerStats[id] = stats;
+
+            AutoloadManager.Instance.LogM.WriteLog($"Player {id} stats synced: {statsJson}");
         }
 
         [Rpc(MultiplayerApi.RpcMode.Authority, CallLocal = true)]
         private void SyncState(BattleState newState)
         {
             CurrentState = newState;
-            AutoloadManager.Instance.LogM.WriteLog($"Turn changed to: {newState.ToString()}.", LogManager.LOG_TYPE.INFO);
+            AutoloadManager.Instance.LogM.WriteLog($"Turn changed to: {newState.ToString()}.");
             AutoloadManager.Instance.SignalM.EmitBattleStateChanged((int)newState);
         }
     }

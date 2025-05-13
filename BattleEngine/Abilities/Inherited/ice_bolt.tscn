@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=3 uid="uid://uug6d5gn4gq0"]
+
+[ext_resource type="PackedScene" uid="uid://bn47uhcqxw0am" path="res://BattleEngine/Abilities/base_ability.tscn" id="1_fib33"]
+[ext_resource type="Script" uid="uid://dlmgrx8rs1xfs" path="res://BattleEngine/Abilities/Inherited/IceBolt.cs" id="2_opbqf"]
+[ext_resource type="Resource" uid="uid://ba6ks7o8wun0q" path="res://BattleEngine/Abilities/Resources/Inherited/IceBoltResrc.tres" id="3_vo7xi"]
+
+[node name="IceBolt" instance=ExtResource("1_fib33")]
+script = ExtResource("2_opbqf")
+Resource = ExtResource("3_vo7xi")

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AbilityResource" load_steps=2 format=3 uid="uid://tpkmohwiw5jl"]
+
+[ext_resource type="Script" uid="uid://cmap6mqxy6c0m" path="res://BattleEngine/Abilities/Resources/AbilityResource.cs" id="1_vpo8g"]
+
+[resource]
+script = ExtResource("1_vpo8g")
+Id = 3
+Name = "Barrier"
+Type = 1
+Power = 20
+Description = "Raises defense for a turn."
+metadata/_custom_type_script = "uid://cmap6mqxy6c0m"

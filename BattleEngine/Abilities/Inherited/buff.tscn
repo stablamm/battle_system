@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=3 uid="uid://ddaqxm28ctw7l"]
+
+[ext_resource type="PackedScene" uid="uid://bn47uhcqxw0am" path="res://BattleEngine/Abilities/base_ability.tscn" id="1_qmkr4"]
+[ext_resource type="Script" uid="uid://fydg3us6sofg" path="res://BattleEngine/Abilities/Inherited/Buff.cs" id="2_3k1mc"]
+[ext_resource type="Resource" uid="uid://byis4qcvvr1ih" path="res://BattleEngine/Abilities/Resources/Inherited/BuffResrc.tres" id="3_wswry"]
+
+[node name="Buff" instance=ExtResource("1_qmkr4")]
+script = ExtResource("2_3k1mc")
+Resource = ExtResource("3_wswry")

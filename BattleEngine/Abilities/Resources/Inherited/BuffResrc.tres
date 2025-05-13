@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="AbilityResource" load_steps=2 format=3 uid="uid://byis4qcvvr1ih"]
+
+[ext_resource type="Script" uid="uid://cmap6mqxy6c0m" path="res://BattleEngine/Abilities/Resources/AbilityResource.cs" id="1_upq6d"]
+
+[resource]
+script = ExtResource("1_upq6d")
+Id = 5
+Name = "Buff"
+Type = 2
+Power = 5
+Description = "Raises offense for a turn."
+metadata/_custom_type_script = "uid://cmap6mqxy6c0m"

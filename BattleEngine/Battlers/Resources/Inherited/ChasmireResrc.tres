@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="BattlerResource" load_steps=3 format=3 uid="uid://7eaoc6s2s2go"]
 
 [ext_resource type="Texture2D" uid="uid://1cn2ttqnnucu" path="res://Assets/Battlers/Chasmire.png" id="1_rqm4a"]
-[ext_resource type="Script" uid="uid://cyiwdmeafx1qg" path="res://BattleEngine/Resources/BattlerResource.cs" id="1_ulugf"]
+[ext_resource type="Script" uid="uid://cyiwdmeafx1qg" path="res://BattleEngine/Battlers/Resources/BattlerResource.cs" id="1_ulugf"]
 
 [resource]
 script = ExtResource("1_ulugf")

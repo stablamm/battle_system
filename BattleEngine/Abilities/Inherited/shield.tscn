@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=3 uid="uid://cgpmcr1r2m4do"]
+
+[ext_resource type="PackedScene" uid="uid://bn47uhcqxw0am" path="res://BattleEngine/Abilities/base_ability.tscn" id="1_gja22"]
+[ext_resource type="Script" uid="uid://dsqd1qjk1icyt" path="res://BattleEngine/Abilities/Inherited/Shield.cs" id="2_s1dlt"]
+[ext_resource type="Resource" uid="uid://bsqhiuyyt7sb2" path="res://BattleEngine/Abilities/Resources/Inherited/ShieldResrc.tres" id="3_6bi5e"]
+
+[node name="Shield" instance=ExtResource("1_gja22")]
+script = ExtResource("2_s1dlt")
+Resource = ExtResource("3_6bi5e")

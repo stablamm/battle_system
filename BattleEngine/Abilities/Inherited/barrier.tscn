@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=3 uid="uid://bgkgbgmx52q7u"]
+
+[ext_resource type="PackedScene" uid="uid://bn47uhcqxw0am" path="res://BattleEngine/Abilities/base_ability.tscn" id="1_2lywt"]
+[ext_resource type="Script" uid="uid://c6a1q78cyxhwy" path="res://BattleEngine/Abilities/Inherited/Barrier.cs" id="2_6v1sf"]
+[ext_resource type="Resource" uid="uid://tpkmohwiw5jl" path="res://BattleEngine/Abilities/Resources/Inherited/BarrierResrc.tres" id="3_ih8x4"]
+
+[node name="Barrier" instance=ExtResource("1_2lywt")]
+script = ExtResource("2_6v1sf")
+Resource = ExtResource("3_ih8x4")

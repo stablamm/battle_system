@@ -1,7 +1,6 @@
 using Godot;
-using System;
 
-namespace BattleSystem.BattleEngine.Resources
+namespace BattleSystem.BattleEngine.Battlers.Resources
 {
     [GlobalClass]
     public partial class BattlerResource : Resource

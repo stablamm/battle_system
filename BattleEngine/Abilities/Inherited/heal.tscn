@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=3 uid="uid://b7ebhbvt157v0"]
+
+[ext_resource type="PackedScene" uid="uid://bn47uhcqxw0am" path="res://BattleEngine/Abilities/base_ability.tscn" id="1_hn43p"]
+[ext_resource type="Script" uid="uid://5co72xnpt3xu" path="res://BattleEngine/Abilities/Inherited/Heal.cs" id="2_y266d"]
+[ext_resource type="Resource" uid="uid://b2pv5w001nssc" path="res://BattleEngine/Abilities/Resources/Inherited/HealResrc.tres" id="3_81p11"]
+
+[node name="Heal" instance=ExtResource("1_hn43p")]
+script = ExtResource("2_y266d")
+Resource = ExtResource("3_81p11")

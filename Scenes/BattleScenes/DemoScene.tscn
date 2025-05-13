@@ -1,9 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://bbwbadrb4wdh1"]
+[gd_scene load_steps=4 format=3 uid="uid://bbwbadrb4wdh1"]
 
 [ext_resource type="Script" uid="uid://b68brb4v4d3xg" path="res://Scenes/BattleScenes/DemoScene.cs" id="1_j33jp"]
+[ext_resource type="PackedScene" uid="uid://xliapfucwkyx" path="res://Scenes/MultiplayerObjects/battler_stats_view.tscn" id="2_dx2t1"]
+[ext_resource type="PackedScene" uid="uid://daxs666bt2u45" path="res://Scenes/MultiplayerObjects/ability_selector.tscn" id="3_ennuv"]
 
 [node name="DemoScene" type="Node2D"]
 script = ExtResource("1_j33jp")
+
+[node name="LeftBattleStats" parent="." instance=ExtResource("2_dx2t1")]
+unique_name_in_owner = true
+position = Vector2(188, 68)
+
+[node name="RightBattleStats" parent="." instance=ExtResource("2_dx2t1")]
+unique_name_in_owner = true
+position = Vector2(824, 68)
 
 [node name="LeftSpawn" type="Marker2D" parent="."]
 unique_name_in_owner = true
@@ -30,5 +40,13 @@ offset_top = 464.0
 offset_right = 586.0
 offset_bottom = 495.0
 text = "ATTACK"
+
+[node name="LeftAbilitySelector" parent="." instance=ExtResource("3_ennuv")]
+unique_name_in_owner = true
+position = Vector2(96, 366)
+
+[node name="RightAbilitySelector" parent="." instance=ExtResource("3_ennuv")]
+unique_name_in_owner = true
+position = Vector2(751, 366)
 
 [connection signal="pressed" from="AttackButton" to="." method="OnAttackButtonPressed"]

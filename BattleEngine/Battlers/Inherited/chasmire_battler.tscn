@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bgq5p5kb2dmy5"]
+[gd_scene load_steps=4 format=3 uid="uid://bgq5p5kb2dmy5"]
 
 [ext_resource type="PackedScene" uid="uid://cptk3xppq1bg3" path="res://BattleEngine/Battlers/base_battler.tscn" id="1_31ssi"]
-[ext_resource type="Resource" uid="uid://7eaoc6s2s2go" path="res://BattleEngine/Resources/Inherited/ChasmireResrc.tres" id="2_it3ik"]
+[ext_resource type="Script" uid="uid://8pgl6d0vqm5l" path="res://BattleEngine/Battlers/Inherited/ChasmireBattler.cs" id="2_it3ik"]
+[ext_resource type="Resource" uid="uid://7eaoc6s2s2go" path="res://BattleEngine/Battlers/Resources/Inherited/ChasmireResrc.tres" id="3_cchib"]
 
 [node name="ChasmireBattler" instance=ExtResource("1_31ssi")]
-Resource = ExtResource("2_it3ik")
+script = ExtResource("2_it3ik")
+Resource = ExtResource("3_cchib")

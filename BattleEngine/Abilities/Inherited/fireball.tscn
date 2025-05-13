@@ -1,0 +1,9 @@
+[gd_scene load_steps=4 format=3 uid="uid://ckiqgmu2fg7qr"]
+
+[ext_resource type="PackedScene" uid="uid://bn47uhcqxw0am" path="res://BattleEngine/Abilities/base_ability.tscn" id="1_wfy6g"]
+[ext_resource type="Script" uid="uid://diuf6oteo01l2" path="res://BattleEngine/Abilities/Inherited/Fireball.cs" id="2_6lkt2"]
+[ext_resource type="Resource" uid="uid://bqc7iqgwngalb" path="res://BattleEngine/Abilities/Resources/Inherited/FireballResrc.tres" id="3_8lmia"]
+
+[node name="Fireball" instance=ExtResource("1_wfy6g")]
+script = ExtResource("2_6lkt2")
+Resource = ExtResource("3_8lmia")

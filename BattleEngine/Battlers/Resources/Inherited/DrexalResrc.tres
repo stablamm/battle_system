@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="BattlerResource" load_steps=3 format=3 uid="uid://cmdmng4ftahdm"]
 
 [ext_resource type="Texture2D" uid="uid://2f56gngdol17" path="res://Assets/Battlers/Drexal.png" id="1_7g1ru"]
-[ext_resource type="Script" uid="uid://cyiwdmeafx1qg" path="res://BattleEngine/Resources/BattlerResource.cs" id="1_fnvsw"]
+[ext_resource type="Script" uid="uid://cyiwdmeafx1qg" path="res://BattleEngine/Battlers/Resources/BattlerResource.cs" id="1_fnvsw"]
 
 [resource]
 script = ExtResource("1_fnvsw")

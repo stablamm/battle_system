@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bn47uhcqxw0am"]
+
+[ext_resource type="Script" uid="uid://dwrlbecyfivx1" path="res://BattleEngine/Abilities/BaseAbility.cs" id="1_t3km1"]
+
+[node name="BaseAbility" type="Node2D"]
+script = ExtResource("1_t3km1")

@@ -22,6 +22,7 @@ SignalManager="*res://Autoloads/SignalManager.cs"
 SceneManager="*res://Autoloads/SceneManager.cs"
 NetworkManager="*res://Autoloads/NetworkManager.cs"
 BattleManager="*res://Autoloads/BattleManager.cs"
+AbilityManager="*res://Autoloads/AbilityManager.cs"
 AutoloadManager="*res://Autoloads/AutoloadManager.cs"
 
 [display]
