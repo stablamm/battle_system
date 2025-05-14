@@ -6,6 +6,9 @@ namespace BattleSystem.Scenes.MultiplayerObjects
 {
     public partial class AbilitySelector : Node2D
     {
+        public bool IsActive { get; set; } = false;
+        public long BattlerId { get; set; } = -1;
+
         private Tree AbilityTree;
 
         public override void _Ready()
@@ -35,8 +38,6 @@ namespace BattleSystem.Scenes.MultiplayerObjects
 
             foreach (var ability in AutoloadManager.Instance.AbilityM.AbilityResources)
             {
-                AutoloadManager.Instance.LogM.WriteLog($"Ability ID: {ability.Key}, Name: {ability.Value.Name}, Description: {ability.Value.Description}", LogManager.LOG_TYPE.DEBUG);
-
                 TreeItem abilityItem = null;
 
                 if (ability.Value.Type == AbilityResource.AbilityType.Offense)
@@ -61,13 +62,19 @@ namespace BattleSystem.Scenes.MultiplayerObjects
 
         private void OnItemSelected()
         {
-            TreeItem selectedItem = AbilityTree.GetSelected();
+            if (!IsActive || Multiplayer.GetUniqueId() != BattlerId) 
+            { 
+                AbilityTree.DeselectAll(); 
+                return; 
+            }
 
+            TreeItem selectedItem = AbilityTree.GetSelected();
             if (selectedItem != null)
             {
                 int abilityId = (int)selectedItem.GetMetadata(0);
                 if (abilityId == -1) { return; }
                 AutoloadManager.Instance.SignalM.EmitAbilitySelected(abilityId);
+                AbilityTree.DeselectAll();
             }
         }
     }

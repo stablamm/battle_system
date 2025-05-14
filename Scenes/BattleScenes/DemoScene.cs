@@ -47,6 +47,10 @@ namespace BattleSystem.Scenes.BattleScenes
                 , new Callable(this, nameof(OnAbilitySelected))
             );
 
+            //TODO: Find a better way to initialize this
+            LeftAbilitySelector.IsActive = true;
+            RightAbilitySelector.IsActive = false;
+
             if (!Multiplayer.IsServer()) { return; }
 
             SpawnBattlers();
@@ -119,6 +123,7 @@ namespace BattleSystem.Scenes.BattleScenes
                 AutoloadManager.Instance.BattleM.Rpc(nameof(BattleManager.SyncStats), id, statsJson);
 
                 LeftBattleStats.SetPlayerId(id);
+                LeftAbilitySelector.BattlerId = id;
                 _playerOneBattlerId = id;
                 _playerOneBattler = b;
             }
@@ -142,6 +147,7 @@ namespace BattleSystem.Scenes.BattleScenes
                 AutoloadManager.Instance.BattleM.Rpc(nameof(BattleManager.SyncStats), id, statsJson);
 
                 RightBattleStats.SetPlayerId(id);
+                RightAbilitySelector.BattlerId = id;
                 _playerTwoBattlerId = id;
                 _playerTwoBattler = b;
             }
@@ -154,11 +160,22 @@ namespace BattleSystem.Scenes.BattleScenes
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
         public void RequestStateChange()
         {
-            if (!Multiplayer.IsServer()) { return; }
-
             BattleManager.BattleState nextState = AutoloadManager.Instance.BattleM.CurrentState == BattleManager.BattleState.PLAYER_ONE_ATTACK
                 ? BattleManager.BattleState.PLAYER_TWO_ATTACK
                 : BattleManager.BattleState.PLAYER_ONE_ATTACK;
+
+            if (nextState == BattleManager.BattleState.PLAYER_ONE_ATTACK)
+            {
+                LeftAbilitySelector.IsActive = true;
+                RightAbilitySelector.IsActive = false;
+            }
+            else
+            {
+                LeftAbilitySelector.IsActive = false;
+                RightAbilitySelector.IsActive = true;
+            }
+
+            if (!Multiplayer.IsServer()) { return; }
 
             AutoloadManager.Instance.BattleM.UpdateState(nextState);
         }
