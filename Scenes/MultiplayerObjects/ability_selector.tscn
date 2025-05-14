@@ -22,3 +22,5 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 column_titles_visible = true
+
+[connection signal="item_selected" from="Panel/VBoxContainer/AbilityTree" to="." method="OnItemSelected"]

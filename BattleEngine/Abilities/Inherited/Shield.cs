@@ -5,15 +5,15 @@ namespace BattleSystem.BattleEngine.Abilities.Inherited
 {
     public partial class Shield : BaseAbility
     {
-        public override void ExecuteAbility(BaseBattler target)
+        public override void ExecuteAbility(BaseBattler self, BaseBattler target)
         {
-            base.ExecuteAbility(target);
+            base.ExecuteAbility(self, target);
 
             // Apply a shield to the target
-            target.ApplyShield(Resource.Power);
+            self.ApplyShield(Resource.Power);
 
             // Log the ability execution
-            AutoloadManager.Instance.LogM.WriteLog($"Shield ability executed on {target.Name}");
+            AutoloadManager.Instance.LogM.WriteLog($"Shield ability executed on {self.Name}");
         }
     }
 }

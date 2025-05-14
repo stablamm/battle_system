@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3 uid="uid://da551r7hnayi2"]
+
+[ext_resource type="Script" uid="uid://i8j7qgqgfjj2" path="res://Scenes/MultiplayerObjects/LogContainer.cs" id="1_amrvx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_amrvx"]
+bg_color = Color(0.0846899, 0.0846899, 0.0846899, 1)
+
+[node name="LogContainer" type="Node2D"]
+script = ExtResource("1_amrvx")
+
+[node name="UI" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+visible = false
+
+[node name="Panel" type="Panel" parent="UI"]
+offset_right = 1149.0
+offset_bottom = 283.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_amrvx")
+
+[node name="Container" type="VBoxContainer" parent="UI/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="UI/Panel/Container"]
+layout_mode = 2
+text = "Logs"
+horizontal_alignment = 1
+
+[node name="Logs" type="RichTextLabel" parent="UI/Panel/Container"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+scroll_following = true

@@ -10,7 +10,7 @@ namespace BattleSystem.BattleEngine.Abilities
         [Export]
         public AbilityResource Resource { get; set; }
 
-        public virtual void ExecuteAbility(BaseBattler target)
+        public virtual void ExecuteAbility(BaseBattler self, BaseBattler target)
         {
             if (Resource == null)
             {

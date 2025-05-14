@@ -1,6 +1,6 @@
 using BattleSystem.Autoloads;
+using BattleSystem.BattleEngine.Abilities.Resources;
 using Godot;
-using System;
 
 namespace BattleSystem.Scenes.MultiplayerObjects
 {
@@ -19,27 +19,31 @@ namespace BattleSystem.Scenes.MultiplayerObjects
 
             TreeItem root = AbilityTree.CreateItem();
             root.SetText(0, "Abilities");
+            root.SetMetadata(0, -1);
 
             TreeItem offense = AbilityTree.CreateItem(root);
             offense.SetText(0, "Offense");
+            offense.SetMetadata(0, -1);
 
             TreeItem defense = AbilityTree.CreateItem(root);
             defense.SetText(0, "Defense");
+            defense.SetMetadata(0, -1);
 
             TreeItem support = AbilityTree.CreateItem(root);
             support.SetText(0, "Support");
+            support.SetMetadata(0, -1);
 
-            foreach (var ability in AutoloadManager.Instance.AbilityM.Abilities)
+            foreach (var ability in AutoloadManager.Instance.AbilityM.AbilityResources)
             {
                 AutoloadManager.Instance.LogM.WriteLog($"Ability ID: {ability.Key}, Name: {ability.Value.Name}, Description: {ability.Value.Description}", LogManager.LOG_TYPE.DEBUG);
 
                 TreeItem abilityItem = null;
 
-                if (ability.Value.Type == BattleEngine.Abilities.Resources.AbilityResource.AbilityType.Offense)
+                if (ability.Value.Type == AbilityResource.AbilityType.Offense)
                 {
                     abilityItem = AbilityTree.CreateItem(offense);
                 }
-                else if (ability.Value.Type == BattleEngine.Abilities.Resources.AbilityResource.AbilityType.Defense)
+                else if (ability.Value.Type == AbilityResource.AbilityType.Defense)
                 {
                     abilityItem = AbilityTree.CreateItem(defense);
                 }
@@ -49,8 +53,21 @@ namespace BattleSystem.Scenes.MultiplayerObjects
                 }
 
                 abilityItem.SetMetadata(0, (int)ability.Key);
+                abilityItem.SetMetadata(1, (int)ability.Key);
                 abilityItem.SetText(0, ability.Value.Name);
                 abilityItem.SetText(1, ability.Value.Description);
+            }
+        }
+
+        private void OnItemSelected()
+        {
+            TreeItem selectedItem = AbilityTree.GetSelected();
+
+            if (selectedItem != null)
+            {
+                int abilityId = (int)selectedItem.GetMetadata(0);
+                if (abilityId == -1) { return; }
+                AutoloadManager.Instance.SignalM.EmitAbilitySelected(abilityId);
             }
         }
     }

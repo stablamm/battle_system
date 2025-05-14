@@ -28,5 +28,10 @@ namespace BattleSystem.BattleEngine.Abilities.Resources
         [Export] public AbilityType Type { get; set; }
         [Export] public int Power { get; set; } // Damage, heal amount, etc.
         [Export] public string Description { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Name} ({Type}) - Power: {Power}, Description: {Description}";
+        }
     }
 }

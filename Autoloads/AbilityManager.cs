@@ -9,9 +9,16 @@ namespace BattleSystem.Autoloads
     {
         public const string NODE_PATH = "/root/AbilityManager";
 
-        public Dictionary<AbilityResource.AbilityId, AbilityResource> Abilities = new();
+        public Dictionary<AbilityResource.AbilityId, AbilityResource> AbilityResources { get; set; } = new();
+        public Dictionary<AbilityResource.AbilityId, PackedScene> PackedAbilities { get; set; } = new();
 
         public override void _Ready()
+        {
+            LoadAbilityResources();
+            LoadPackedAbilities();
+        }
+
+        private void LoadAbilityResources()
         {
             var basePath = "res://BattleEngine/Abilities/Resources/Inherited/";
             var pathEnd = "Resrc.tres";
@@ -27,17 +34,24 @@ namespace BattleSystem.Autoloads
 
             foreach (var path in abilityPaths)
             {
-                LoadAbility(path);
+                var ability = GD.Load<AbilityResource>(path);
+                if (ability != null)
+                {
+                    AbilityResources[ability.Id] = ability;
+                }
             }
         }
 
-        private void LoadAbility(string path)
+        private void LoadPackedAbilities()
         {
-            var ability = GD.Load<AbilityResource>(path);
-            if (ability != null)
-            {
-                Abilities[ability.Id] = ability;
-            }
+            var basePath = "res://BattleEngine/Abilities/Inherited/{0}.tscn";
+            
+            PackedAbilities[AbilityResource.AbilityId.Fireball] = GD.Load<PackedScene>(string.Format(basePath, "fireball"));
+            PackedAbilities[AbilityResource.AbilityId.IceBolt] = GD.Load<PackedScene>(string.Format(basePath, "ice_bolt"));
+            PackedAbilities[AbilityResource.AbilityId.Shield] = GD.Load<PackedScene>(string.Format(basePath, "shield"));
+            PackedAbilities[AbilityResource.AbilityId.Barrier] = GD.Load<PackedScene>(string.Format(basePath, "barrier"));
+            PackedAbilities[AbilityResource.AbilityId.Heal] = GD.Load<PackedScene>(string.Format(basePath, "heal"));
+            PackedAbilities[AbilityResource.AbilityId.Buff] = GD.Load<PackedScene>(string.Format(basePath, "buff"));
         }
     }
 }

@@ -16,18 +16,23 @@ namespace BattleSystem.Autoloads
 
         public void WriteLog(string message, LOG_TYPE type = LOG_TYPE.INFO)
         {
-            string logMessage = $"[{DateTime.Now.ToString("hh:mm:ss")}] [{type}] [{(Multiplayer.IsServer() ? "SERVER" : "CLIENT")}] {message}";
+            string logTimestamp = DateTime.Now.ToString("hh:mm:ss");
+            string logMessage = $"[{logTimestamp}] [{type}] [{(Multiplayer.IsServer() ? "SERVER" : "CLIENT")}] {message}";
+            string emitMessage = $"[{logTimestamp}] [{type}] {message}";
 
             switch (type)
             {
                 case LOG_TYPE.DEBUG:
                     GD.Print(logMessage);
+                    AutoloadManager.Instance.SignalM.EmitDebugLogMessage(emitMessage);
                     break;
                 case LOG_TYPE.INFO:
                     GD.Print(logMessage);
+                    AutoloadManager.Instance.SignalM.EmitInfoLogMessage(emitMessage);
                     break;
                 case LOG_TYPE.ERROR:
                     GD.PrintErr(logMessage);
+                    AutoloadManager.Instance.SignalM.EmitErrorLogMessage(emitMessage);
                     break;
             }
         }

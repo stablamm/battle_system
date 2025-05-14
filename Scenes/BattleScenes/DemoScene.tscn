@@ -1,11 +1,15 @@
-[gd_scene load_steps=4 format=3 uid="uid://bbwbadrb4wdh1"]
+[gd_scene load_steps=5 format=3 uid="uid://bbwbadrb4wdh1"]
 
 [ext_resource type="Script" uid="uid://b68brb4v4d3xg" path="res://Scenes/BattleScenes/DemoScene.cs" id="1_j33jp"]
 [ext_resource type="PackedScene" uid="uid://xliapfucwkyx" path="res://Scenes/MultiplayerObjects/battler_stats_view.tscn" id="2_dx2t1"]
+[ext_resource type="PackedScene" uid="uid://da551r7hnayi2" path="res://Scenes/MultiplayerObjects/log_container.tscn" id="2_x40ym"]
 [ext_resource type="PackedScene" uid="uid://daxs666bt2u45" path="res://Scenes/MultiplayerObjects/ability_selector.tscn" id="3_ennuv"]
 
 [node name="DemoScene" type="Node2D"]
 script = ExtResource("1_j33jp")
+
+[node name="LogContainer" parent="." instance=ExtResource("2_x40ym")]
+unique_name_in_owner = true
 
 [node name="LeftBattleStats" parent="." instance=ExtResource("2_dx2t1")]
 unique_name_in_owner = true

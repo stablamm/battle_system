@@ -5,9 +5,9 @@ namespace BattleSystem.BattleEngine.Abilities.Inherited
 {
     public partial class IceBolt : BaseAbility
     {
-        public override void ExecuteAbility(BaseBattler target)
+        public override void ExecuteAbility(BaseBattler self, BaseBattler target)
         {
-            base.ExecuteAbility(target);
+            base.ExecuteAbility(self, target);
 
             // Apply damage to the target
             target.TakeDamage(Resource.Power);

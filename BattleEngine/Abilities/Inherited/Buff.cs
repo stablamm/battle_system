@@ -5,15 +5,15 @@ namespace BattleSystem.BattleEngine.Abilities.Inherited
 {
     public partial class Buff : BaseAbility
     {
-        public override void ExecuteAbility(BaseBattler target)
+        public override void ExecuteAbility(BaseBattler self, BaseBattler target)
         {
-            base.ExecuteAbility(target);
+            base.ExecuteAbility(self, target);
 
             // Apply a buff to the target
-            target.ApplyAttackBuff(Resource.Power);
+            self.ApplyAttackBuff(Resource.Power);
 
             // Log the ability execution
-            AutoloadManager.Instance.LogM.WriteLog($"Buff ability executed on {target.Name}");
+            AutoloadManager.Instance.LogM.WriteLog($"Buff ability executed on {self.Name}");
         }
     }
 }

@@ -1,6 +1,7 @@
 using BattleSystem.Autoloads;
 using BattleSystem.BattleEngine.Battlers.Resources;
 using Godot;
+using Newtonsoft.Json;
 
 namespace BattleSystem.BattleEngine.Battlers
 {
@@ -8,6 +9,8 @@ namespace BattleSystem.BattleEngine.Battlers
     {
         [Export]
         public BattlerResource Resource { get; set; }
+
+        public long BattlerId { get; set; } = -1;
 
         public BattlerStats Stats { get; set; } = new BattlerStats();
 
@@ -28,7 +31,7 @@ namespace BattleSystem.BattleEngine.Battlers
 
         public virtual void LoadStats() { }
 
-        public void TakeDamage(int damage)
+        public virtual void TakeDamage(int damage)
         {
             if (Stats.Shield > 0)
             {
@@ -48,34 +51,49 @@ namespace BattleSystem.BattleEngine.Battlers
             {
                 AutoloadManager.Instance.LogM.WriteLog($"{Resource.Name} has died.", LogManager.LOG_TYPE.INFO);
             }
+
+            Rpc(nameof(SyncStats), BattlerId, JsonConvert.SerializeObject(Stats));
         }
 
-        public void Heal(int amount)
+        public virtual void Heal(int amount)
         {
             Stats.Health += amount;
             if (Stats.Health > 100)
             {
                 Stats.Health = 100;
             }
+            Rpc(nameof(SyncStats), BattlerId, JsonConvert.SerializeObject(Stats));
         }
 
-        public void ApplyShield(int amount)
+        public virtual void ApplyShield(int amount)
         {
             Stats.Shield += amount;
             if (Stats.Shield > 100)
             {
                 Stats.Shield = 100;
             }
+            Rpc(nameof(SyncStats), BattlerId, JsonConvert.SerializeObject(Stats));
         }
 
-        public void ApplyAttackBuff(float amount)
+        public virtual void ApplyAttackBuff(float amount)
         {
             Stats.Attack = amount;
+            Rpc(nameof(SyncStats), BattlerId, JsonConvert.SerializeObject(Stats));
         }
 
-        public void ApplyDefenseBuff(float amount)
+        public virtual void ApplyDefenseBuff(float amount)
         {
-            Stats.Attack = amount;
+            Stats.Defense = amount;
+            Rpc(nameof(SyncStats), BattlerId, JsonConvert.SerializeObject(Stats));
+        }
+
+        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
+        private void SyncStats(long id, string statsJson)
+        {
+            var stats = JsonConvert.DeserializeObject<BattlerStats>(statsJson);
+
+            AutoloadManager.Instance.BattleM.PlayerStats[id] = stats;
+            AutoloadManager.Instance.LogM.WriteLog($"Player {id} stats synced: {statsJson}");
         }
     }
 

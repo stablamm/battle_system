@@ -5,15 +5,15 @@ namespace BattleSystem.BattleEngine.Abilities.Inherited
 {
     public partial class Heal : BaseAbility
     {
-        public override void ExecuteAbility(BaseBattler target)
+        public override void ExecuteAbility(BaseBattler self, BaseBattler target)
         {
-            base.ExecuteAbility(target);
+            base.ExecuteAbility(self, target);
 
             // Apply healing to the target
-            target.Heal(Resource.Power);
+            self.Heal(Resource.Power);
 
             // Log the ability execution
-            AutoloadManager.Instance.LogM.WriteLog($"Heal ability executed on {target.Name}");
+            AutoloadManager.Instance.LogM.WriteLog($"Heal ability executed on {self.Name}");
         }
     }
 }
