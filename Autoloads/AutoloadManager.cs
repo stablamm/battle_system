@@ -11,6 +11,7 @@ namespace BattleSystem.Autoloads
         public SceneManager SceneM;
         public SignalManager SignalM;
         public AbilityManager AbilityM;
+        public StateManager StateM;
 
         public override void _Ready()
         {
@@ -22,6 +23,7 @@ namespace BattleSystem.Autoloads
             SceneM = GetNode<SceneManager>(SceneManager.NODE_PATH);
             SignalM = GetNode<SignalManager>(SignalManager.NODE_PATH);
             AbilityM = GetNode<AbilityManager>(AbilityManager.NODE_PATH);
+            StateM = GetNode<StateManager>(StateManager.NODE_PATH);
         }
     }
 }

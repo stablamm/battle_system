@@ -95,6 +95,8 @@ namespace BattleSystem.Scenes.MultiplayerObjects
             SelectButton.Visible = false;
             RightButton.Visible = false;
 
+
+
             Rpc(nameof(ReadyState)); // Remote update
             ReadyState(); // Local update
         }
@@ -145,6 +147,14 @@ namespace BattleSystem.Scenes.MultiplayerObjects
             if (!Multiplayer.IsServer()) { return; }
             
             AutoloadManager.Instance.BattleM.SelectBattler(ownerId, (BattleManager.Battlers)index);
+
+            // Load abilities
+            var battler = AutoloadManager.Instance.BattleM.PackedBattlers[AutoloadManager.Instance.BattleM.SelectedBattlers[ownerId]].Instantiate() as BaseBattler;
+            AutoloadManager.Instance.StateM.RequestAddAbility(ownerId, (int)battler.Resource.StartingOffensiveAbility);
+            AutoloadManager.Instance.StateM.RequestAddAbility(ownerId, (int)battler.Resource.StartingDefensiveAbility);
+            AutoloadManager.Instance.StateM.RequestAddAbility(ownerId, (int)battler.Resource.StartingSupportAbility);
+            AutoloadManager.Instance.StateM.RequestAddAbility(ownerId, (int)battler.Resource.StartingMetaAbility);
+            battler.QueueFree();
 
             //TODO: Find a better way to trigger this.
             if (AutoloadManager.Instance.BattleM.SelectedBattlers.Keys.Count > 1)

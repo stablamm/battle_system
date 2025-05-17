@@ -23,6 +23,7 @@ SceneManager="*res://Autoloads/SceneManager.cs"
 NetworkManager="*res://Autoloads/NetworkManager.cs"
 BattleManager="*res://Autoloads/BattleManager.cs"
 AbilityManager="*res://Autoloads/AbilityManager.cs"
+StateManager="*res://Autoloads/StateManager.cs"
 AutoloadManager="*res://Autoloads/AutoloadManager.cs"
 
 [display]

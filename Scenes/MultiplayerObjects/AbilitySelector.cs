@@ -7,14 +7,41 @@ namespace BattleSystem.Scenes.MultiplayerObjects
     public partial class AbilitySelector : Node2D
     {
         public bool IsActive { get; set; } = false;
-        public long BattlerId { get; set; } = -1;
+        public long BattlerId { get; private set; } = -1;
 
         private Tree AbilityTree;
 
         public override void _Ready()
         {
             AbilityTree = GetNode<Tree>("%AbilityTree");
+        }
 
+        private void OnItemSelected()
+        {
+            if (!IsActive || Multiplayer.GetUniqueId() != BattlerId) 
+            { 
+                AbilityTree.DeselectAll(); 
+                return; 
+            }
+
+            TreeItem selectedItem = AbilityTree.GetSelected();
+            if (selectedItem != null)
+            {
+                int abilityId = (int)selectedItem.GetMetadata(0);
+                if (abilityId == -1) { return; }
+                AutoloadManager.Instance.SignalM.EmitAbilitySelected(abilityId);
+                AbilityTree.DeselectAll();
+            }
+        }
+
+        public void SetBattlerId(long battlerId)
+        {
+            BattlerId = battlerId;
+            LoadAbilities();
+        }
+
+        private void LoadAbilities()
+        {
             AbilityTree.Clear();
 
             AbilityTree.Columns = 2;
@@ -36,15 +63,16 @@ namespace BattleSystem.Scenes.MultiplayerObjects
             support.SetText(0, "Support");
             support.SetMetadata(0, -1);
 
-            foreach (var ability in AutoloadManager.Instance.AbilityM.AbilityResources)
+            foreach (var abilityId in AutoloadManager.Instance.StateM.SelectedAbilities[BattlerId])
             {
+                AbilityResource resrc = AutoloadManager.Instance.AbilityM.AbilityResources[abilityId];
                 TreeItem abilityItem = null;
 
-                if (ability.Value.Type == AbilityResource.AbilityType.Offense)
+                if (resrc.Type == AbilityResource.AbilityType.Offense)
                 {
                     abilityItem = AbilityTree.CreateItem(offense);
                 }
-                else if (ability.Value.Type == AbilityResource.AbilityType.Defense)
+                else if (resrc.Type == AbilityResource.AbilityType.Defense)
                 {
                     abilityItem = AbilityTree.CreateItem(defense);
                 }
@@ -53,28 +81,10 @@ namespace BattleSystem.Scenes.MultiplayerObjects
                     abilityItem = AbilityTree.CreateItem(support);
                 }
 
-                abilityItem.SetMetadata(0, (int)ability.Key);
-                abilityItem.SetMetadata(1, (int)ability.Key);
-                abilityItem.SetText(0, ability.Value.Name);
-                abilityItem.SetText(1, ability.Value.Description);
-            }
-        }
-
-        private void OnItemSelected()
-        {
-            if (!IsActive || Multiplayer.GetUniqueId() != BattlerId) 
-            { 
-                AbilityTree.DeselectAll(); 
-                return; 
-            }
-
-            TreeItem selectedItem = AbilityTree.GetSelected();
-            if (selectedItem != null)
-            {
-                int abilityId = (int)selectedItem.GetMetadata(0);
-                if (abilityId == -1) { return; }
-                AutoloadManager.Instance.SignalM.EmitAbilitySelected(abilityId);
-                AbilityTree.DeselectAll();
+                abilityItem.SetMetadata(0, (int)resrc.Id);
+                abilityItem.SetMetadata(1, (int)resrc.Id);
+                abilityItem.SetText(0, resrc.Name);
+                abilityItem.SetText(1, resrc.Description);
             }
         }
     }

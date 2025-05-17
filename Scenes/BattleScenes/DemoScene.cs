@@ -123,7 +123,7 @@ namespace BattleSystem.Scenes.BattleScenes
                 AutoloadManager.Instance.BattleM.Rpc(nameof(BattleManager.SyncStats), id, statsJson);
 
                 LeftBattleStats.SetPlayerId(id);
-                LeftAbilitySelector.BattlerId = id;
+                LeftAbilitySelector.SetBattlerId(id);
                 _playerOneBattlerId = id;
                 _playerOneBattler = b;
             }
@@ -147,7 +147,7 @@ namespace BattleSystem.Scenes.BattleScenes
                 AutoloadManager.Instance.BattleM.Rpc(nameof(BattleManager.SyncStats), id, statsJson);
 
                 RightBattleStats.SetPlayerId(id);
-                RightAbilitySelector.BattlerId = id;
+                RightAbilitySelector.SetBattlerId(id);
                 _playerTwoBattlerId = id;
                 _playerTwoBattler = b;
             }
