@@ -10,12 +10,13 @@ namespace BattleSystem.Autoloads
     public partial class NetworkManager : Node
     {
         public const string NODE_PATH = "/root/NetworkManager";
+        
+        public Dictionary<long, string> ConnectedPeers { get; private set; } = new();
 
         private readonly byte[] Key = Encoding.UTF8.GetBytes("My32ByteSecretKey1234567890abcde");
         private readonly byte[] IV = Encoding.UTF8.GetBytes("1234567890abcdef");
 
         private ENetMultiplayerPeer _peer;
-        private Dictionary<long, string> _connectedPeers = new();
         private string _serverPasswordHash;
         private string _clientPasswordHash;
         private const int PASSWORD_MIN_LENGTH = 8;
@@ -54,10 +55,10 @@ namespace BattleSystem.Autoloads
             Multiplayer.PeerConnected += OnPeerConnected;
             Multiplayer.PeerDisconnected += OnPeerDisconnected;
 
-            _connectedPeers[1] = username;
+            ConnectedPeers[1] = username;
             _encryptedServerConnectionString = EncryptConnectionData(ip, port, password);
             AutoloadManager.Instance.LogM.WriteLog($"Server started on port: {port}", LogManager.LOG_TYPE.INFO);
-            UpdatePlayerList(ConvertToGodotDictionary(_connectedPeers)); // Initial update for server
+            UpdatePlayerList(ConvertToGodotDictionary(ConnectedPeers)); // Initial update for server
             return true;
         }
 
@@ -80,7 +81,7 @@ namespace BattleSystem.Autoloads
             Multiplayer.PeerConnected += OnPeerConnected;
             Multiplayer.PeerDisconnected += OnPeerDisconnected;
 
-            _connectedPeers[Multiplayer.GetUniqueId()] = username;
+            ConnectedPeers[Multiplayer.GetUniqueId()] = username;
             AutoloadManager.Instance.LogM.WriteLog($"Connecting to server at {ip}:{port}", LogManager.LOG_TYPE.INFO);
             return true;
         }
@@ -97,7 +98,7 @@ namespace BattleSystem.Autoloads
         public Dictionary<long, string> GetConnectedPeers()
         {
             var copy = new Dictionary<long, string>();
-            foreach (var kvp in _connectedPeers)
+            foreach (var kvp in ConnectedPeers)
             {
                 copy[kvp.Key] = kvp.Value;
             }
@@ -157,8 +158,8 @@ namespace BattleSystem.Autoloads
             AutoloadManager.Instance.LogM.WriteLog($"Peer connected with ID: {id}", LogManager.LOG_TYPE.INFO);
             if (Multiplayer.IsServer())
             {
-                Rpc(nameof(UpdatePlayerList), ConvertToGodotDictionary(_connectedPeers));
-                UpdatePlayerList(ConvertToGodotDictionary(_connectedPeers)); // Update server locally
+                Rpc(nameof(UpdatePlayerList), ConvertToGodotDictionary(ConnectedPeers));
+                UpdatePlayerList(ConvertToGodotDictionary(ConnectedPeers)); // Update server locally
             }
         }
 
@@ -167,8 +168,8 @@ namespace BattleSystem.Autoloads
             AutoloadManager.Instance.LogM.WriteLog($"Peer disconnected with ID: {id}", LogManager.LOG_TYPE.INFO);
             if (Multiplayer.IsServer())
             {
-                _connectedPeers.Remove(id);
-                var playerList = ConvertToGodotDictionary(_connectedPeers);
+                ConnectedPeers.Remove(id);
+                var playerList = ConvertToGodotDictionary(ConnectedPeers);
                 Rpc(nameof(UpdatePlayerList), playerList);
                 UpdatePlayerList(playerList); // Update server locally
             }
@@ -177,7 +178,7 @@ namespace BattleSystem.Autoloads
         private void OnConnectedToServer()
         {
             AutoloadManager.Instance.LogM.WriteLog("Successfully connected to server, sending connection request...");
-            RpcId(1, nameof(RequestConnection), _connectedPeers[Multiplayer.GetUniqueId()], _clientPasswordHash);
+            RpcId(1, nameof(RequestConnection), ConnectedPeers[Multiplayer.GetUniqueId()], _clientPasswordHash);
             _clientPasswordHash = null;
         }
 
@@ -223,7 +224,7 @@ namespace BattleSystem.Autoloads
         private void CleanupConnection()
         {
             _peer = null;
-            _connectedPeers.Clear();
+            ConnectedPeers.Clear();
             Multiplayer.MultiplayerPeer = null;
         }
 
@@ -250,8 +251,8 @@ namespace BattleSystem.Autoloads
                 return;
             }
 
-            _connectedPeers[peerId] = username;
-            var playerList = ConvertToGodotDictionary(_connectedPeers);
+            ConnectedPeers[peerId] = username;
+            var playerList = ConvertToGodotDictionary(ConnectedPeers);
             Rpc(nameof(UpdatePlayerList), playerList); // Broadcast to all peers
             UpdatePlayerList(playerList); // Explicitly update server locally
             RpcId(peerId, nameof(ConnectionAccepted));
@@ -260,13 +261,13 @@ namespace BattleSystem.Autoloads
         [Rpc(MultiplayerApi.RpcMode.AnyPeer)]
         private void UpdatePlayerList(Godot.Collections.Dictionary players)
         {
-            _connectedPeers.Clear();
+            ConnectedPeers.Clear();
             foreach (var key in players.Keys)
             {
-                _connectedPeers[(long)(Variant)key] = (string)players[key];
+                ConnectedPeers[(long)(Variant)key] = (string)players[key];
             }
 
-            AutoloadManager.Instance.LogM.WriteLog($"Updating player list locally: {_connectedPeers.Count} players connected");
+            AutoloadManager.Instance.LogM.WriteLog($"Updating player list locally: {ConnectedPeers.Count} players connected");
             AutoloadManager.Instance.SignalM.EmitPlayerListUpdated();
         }
 

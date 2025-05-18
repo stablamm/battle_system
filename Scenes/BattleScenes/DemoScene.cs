@@ -1,4 +1,5 @@
 using BattleSystem.Autoloads;
+using BattleSystem.Autoloads.States;
 using BattleSystem.BattleEngine.Abilities.Resources;
 using BattleSystem.BattleEngine.Battlers;
 using BattleSystem.Scenes.MultiplayerObjects;
@@ -34,8 +35,8 @@ namespace BattleSystem.Scenes.BattleScenes
             WaitingLabel = GetNode<Label>("%WaitingLabel");
 
             AutoloadManager.Instance.SignalM.Connect(
-                nameof(SignalManager.Battle_StateChanged_EventHandler)
-                , new Callable(this, nameof(OnBattleStateChanged))
+                nameof(SignalManager.Round_StateChanged_EventHandler)
+                , new Callable(this, nameof(OnRoundStateChanged))
             );
 
             AutoloadManager.Instance.SignalM.Connect(
@@ -45,7 +46,12 @@ namespace BattleSystem.Scenes.BattleScenes
 
             MainAbilitySelector.SetBattlerId(Multiplayer.GetUniqueId());
 
-            if (!Multiplayer.IsServer()) { return; }
+            if (!Multiplayer.IsServer()) 
+            {
+                //request sync
+                AutoloadManager.Instance.StateM.RequestSyncRound();
+                return; 
+            }
 
             SpawnBattlers();
             AutoloadManager.Instance.BattleM.StartGame();
@@ -59,33 +65,46 @@ namespace BattleSystem.Scenes.BattleScenes
             }
         }
 
-        private void OnBattleStateChanged(int newState)
+        private void OnRoundStateChanged(int newState)
         {
-            BattleManager.BattleState currentState = (BattleManager.BattleState)newState;
-            bool isMyTurn = (currentState == BattleManager.BattleState.PLAYER_ONE_ATTACK && Multiplayer.GetUniqueId() == 1)
-                         || (currentState == BattleManager.BattleState.PLAYER_TWO_ATTACK && Multiplayer.GetUniqueId() != 1);
+            Round.RoundState currentState = (Round.RoundState)newState;
+            bool isMyTurn = false;
 
-            // Enable/disable ui components based on whose turn it is
-            if (isMyTurn)
+            if (currentState == Round.RoundState.PREROUND)
             {
-                WaitingLabel.Visible = false;
-                MainAbilitySelector.IsActive = true;
+                AutoloadManager.Instance.StateM.RequestInitializeRound();
             }
-            else
+            else if (currentState == Round.RoundState.PREPARE)
             {
-                WaitingLabel.Visible = true;
-                MainAbilitySelector.IsActive = false;
+                AutoloadManager.Instance.LogM.WriteLog("Preparing for the round...");
+                AutoloadManager.Instance.StateM.RequestProgressRound();
+            }
+            else if (currentState == Round.RoundState.ATTACK)
+            {
+                isMyTurn = AutoloadManager.Instance.StateM.IsMyTurn();
+                
+                AutoloadManager.Instance.LogM.WriteLog($"Is My Turn: {isMyTurn}");
+
+                if (isMyTurn)
+                {
+                    WaitingLabel.Visible = false;
+                    MainAbilitySelector.IsActive = true;
+                }
+                else
+                {
+                    WaitingLabel.Visible = true;
+                    MainAbilitySelector.IsActive = false;
+                }
+            }
+            else if (currentState == Round.RoundState.POSTROUND)
+            {
+
             }
         }
 
         private void OnAbilitySelected(int abilityId)
         {
             Rpc(nameof(RequestUseAbility), abilityId);
-        }
-
-        private void OnAttackButtonPressed()
-        {
-            Rpc(nameof(RequestStateChange));
         }
 
         public void SpawnBattlers()
@@ -149,18 +168,6 @@ namespace BattleSystem.Scenes.BattleScenes
             }
         }
 
-        [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
-        public void RequestStateChange()
-        {
-            if (!Multiplayer.IsServer()) { return; }
-
-            BattleManager.BattleState nextState = AutoloadManager.Instance.BattleM.CurrentState == BattleManager.BattleState.PLAYER_ONE_ATTACK
-                ? BattleManager.BattleState.PLAYER_TWO_ATTACK
-                : BattleManager.BattleState.PLAYER_ONE_ATTACK;
-
-            AutoloadManager.Instance.BattleM.UpdateState(nextState);
-        }
-
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
         public void RequestUseAbility(int abilityId)
         {
@@ -169,16 +176,16 @@ namespace BattleSystem.Scenes.BattleScenes
             var packedAbility = AutoloadManager.Instance.AbilityM.PackedAbilities[(AbilityResource.AbilityId)abilityId];
             var unpackedAbility = (BattleEngine.Abilities.BaseAbility)packedAbility.Instantiate();
 
-            if (AutoloadManager.Instance.BattleM.CurrentState == BattleManager.BattleState.PLAYER_ONE_ATTACK)
+            if (AutoloadManager.Instance.StateM.CurrentState == StateManager.BattleState.PLAYER_ONE_ATTACK)
             {
                 unpackedAbility.ExecuteAbility(_playerOneBattler, _playerTwoBattler);
             }
-            else
+            else if (AutoloadManager.Instance.StateM.CurrentState == StateManager.BattleState.PLAYER_TWO_ATTACK)
             {
                 unpackedAbility.ExecuteAbility(_playerTwoBattler, _playerOneBattler);
             }
 
-            Rpc(nameof(RequestStateChange));
+            AutoloadManager.Instance.StateM.RequestProgressRound();
         }
     }
 }
