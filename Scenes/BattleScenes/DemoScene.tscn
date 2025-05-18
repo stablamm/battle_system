@@ -31,26 +31,11 @@ position = Vector2(888, 269)
 unique_name_in_owner = true
 visible = false
 offset_left = 518.0
-offset_top = 468.0
+offset_top = 89.0
 offset_right = 587.0
-offset_bottom = 491.0
+offset_bottom = 112.0
 text = "WAITING"
 
-[node name="AttackButton" type="Button" parent="."]
+[node name="MainAbilitySelector" parent="." instance=ExtResource("3_ennuv")]
 unique_name_in_owner = true
-visible = false
-offset_left = 518.0
-offset_top = 464.0
-offset_right = 586.0
-offset_bottom = 495.0
-text = "ATTACK"
-
-[node name="LeftAbilitySelector" parent="." instance=ExtResource("3_ennuv")]
-unique_name_in_owner = true
-position = Vector2(96, 366)
-
-[node name="RightAbilitySelector" parent="." instance=ExtResource("3_ennuv")]
-unique_name_in_owner = true
-position = Vector2(751, 366)
-
-[connection signal="pressed" from="AttackButton" to="." method="OnAttackButtonPressed"]
+position = Vector2(407, 363)

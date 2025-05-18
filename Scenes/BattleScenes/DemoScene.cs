@@ -18,24 +18,20 @@ namespace BattleSystem.Scenes.BattleScenes
         private LogContainer LogContainer;
         private BattlerStatsView LeftBattleStats;
         private BattlerStatsView RightBattleStats;
-        private AbilitySelector LeftAbilitySelector;
-        private AbilitySelector RightAbilitySelector;
+        private AbilitySelector MainAbilitySelector;
         private Marker2D LeftSpawn;
         private Marker2D RightSpawn;
         private Label WaitingLabel;
-        private Button AttackButton;
 
         public override void _Ready()
         {
             LogContainer = GetNode<LogContainer>("%LogContainer");
             LeftBattleStats = GetNode<BattlerStatsView>("%LeftBattleStats");
             RightBattleStats = GetNode<BattlerStatsView>("%RightBattleStats");
-            LeftAbilitySelector = GetNode<AbilitySelector>("%LeftAbilitySelector");
-            RightAbilitySelector = GetNode<AbilitySelector>("%RightAbilitySelector");
+            MainAbilitySelector = GetNode<AbilitySelector>("%MainAbilitySelector");
             LeftSpawn = GetNode<Marker2D>("%LeftSpawn");
             RightSpawn = GetNode<Marker2D>("%RightSpawn");
             WaitingLabel = GetNode<Label>("%WaitingLabel");
-            AttackButton = GetNode<Button>("%AttackButton");
 
             AutoloadManager.Instance.SignalM.Connect(
                 nameof(SignalManager.Battle_StateChanged_EventHandler)
@@ -47,9 +43,7 @@ namespace BattleSystem.Scenes.BattleScenes
                 , new Callable(this, nameof(OnAbilitySelected))
             );
 
-            //TODO: Find a better way to initialize this
-            LeftAbilitySelector.IsActive = true;
-            RightAbilitySelector.IsActive = false;
+            MainAbilitySelector.SetBattlerId(Multiplayer.GetUniqueId());
 
             if (!Multiplayer.IsServer()) { return; }
 
@@ -75,12 +69,12 @@ namespace BattleSystem.Scenes.BattleScenes
             if (isMyTurn)
             {
                 WaitingLabel.Visible = false;
-                AttackButton.Visible = true;
+                MainAbilitySelector.IsActive = true;
             }
             else
             {
                 WaitingLabel.Visible = true;
-                AttackButton.Visible = false;
+                MainAbilitySelector.IsActive = false;
             }
         }
 
@@ -123,7 +117,6 @@ namespace BattleSystem.Scenes.BattleScenes
                 AutoloadManager.Instance.BattleM.Rpc(nameof(BattleManager.SyncStats), id, statsJson);
 
                 LeftBattleStats.SetPlayerId(id);
-                LeftAbilitySelector.SetBattlerId(id);
                 _playerOneBattlerId = id;
                 _playerOneBattler = b;
             }
@@ -147,7 +140,6 @@ namespace BattleSystem.Scenes.BattleScenes
                 AutoloadManager.Instance.BattleM.Rpc(nameof(BattleManager.SyncStats), id, statsJson);
 
                 RightBattleStats.SetPlayerId(id);
-                RightAbilitySelector.SetBattlerId(id);
                 _playerTwoBattlerId = id;
                 _playerTwoBattler = b;
             }
@@ -160,22 +152,11 @@ namespace BattleSystem.Scenes.BattleScenes
         [Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true)]
         public void RequestStateChange()
         {
+            if (!Multiplayer.IsServer()) { return; }
+
             BattleManager.BattleState nextState = AutoloadManager.Instance.BattleM.CurrentState == BattleManager.BattleState.PLAYER_ONE_ATTACK
                 ? BattleManager.BattleState.PLAYER_TWO_ATTACK
                 : BattleManager.BattleState.PLAYER_ONE_ATTACK;
-
-            if (nextState == BattleManager.BattleState.PLAYER_ONE_ATTACK)
-            {
-                LeftAbilitySelector.IsActive = true;
-                RightAbilitySelector.IsActive = false;
-            }
-            else
-            {
-                LeftAbilitySelector.IsActive = false;
-                RightAbilitySelector.IsActive = true;
-            }
-
-            if (!Multiplayer.IsServer()) { return; }
 
             AutoloadManager.Instance.BattleM.UpdateState(nextState);
         }

@@ -53,8 +53,6 @@ namespace BattleSystem.Autoloads
 
         public void StartGame()
         {
-            if (!Multiplayer.IsServer()) { return; }
-
             AutoloadManager.Instance.LogM.WriteLog("Starting game...");
 
             Rpc(nameof(SyncState), (int)BattleState.PLAYER_ONE_ATTACK); // Start with player one attack state.

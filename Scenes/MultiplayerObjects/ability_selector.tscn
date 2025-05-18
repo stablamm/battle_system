@@ -23,4 +23,4 @@ layout_mode = 2
 size_flags_vertical = 3
 column_titles_visible = true
 
-[connection signal="item_selected" from="Panel/VBoxContainer/AbilityTree" to="." method="OnItemSelected"]
+[connection signal="item_activated" from="Panel/VBoxContainer/AbilityTree" to="." method="OnItemSelected"]
